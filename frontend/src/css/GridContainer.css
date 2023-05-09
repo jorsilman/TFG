@@ -1,0 +1,85 @@
+.grid-container {
+  display: flex;
+  flex-direction: column;
+  height: 100vh; /* Establece la altura del contenedor a la altura de la ventana del navegador */
+  overflow: hidden; /* Evita que se muestre la barra de desplazamiento */
+  position: relative; /* Establece la posición del contenedor */
+}
+
+.grid-layout {
+  flex: 1;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-template-rows: repeat(2, 1fr);
+  gap: 20px;
+  padding: 20px;
+  height: calc(100vh - 50px); /* Establece la altura del grid-layout */
+}
+
+nav {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 50px;
+  background-color: #f2f2f2;
+  position: absolute; /* Establece la posición del elemento en relación al contenedor */
+  top: 0; /* Establece la posición superior del elemento */
+  left: 0; /* Establece la posición izquierda del elemento */
+  right: 0; /* Establece la posición derecha del elemento */
+}
+
+nav button {
+  margin: 0 10px;
+  font-size: 16px;
+  font-weight: bold;
+  background-color: #fff;
+  border: none;
+  cursor: pointer;
+}
+
+.columns-3 {
+  grid-template-columns: repeat(3, 1fr);
+  grid-template-rows: repeat(1, 1fr);
+}
+
+.columns-4 {
+  grid-template-columns: repeat(2, 1fr);
+  grid-template-rows: repeat(2, 1fr);
+}
+
+.columns-5 {
+  grid-template-columns: repeat(3, 1fr);
+  grid-template-rows: repeat(2, 1fr);
+}
+
+.columns-6 {
+  grid-template-columns: repeat(3, 1fr);
+  grid-template-rows: repeat(2, 1fr);
+}
+
+.grid-item {
+  background-color: #ddd;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* Agregado para fijar el select en la parte superior del contenedor */
+.selection-container {
+  position: absolute;
+  top: 50px;
+  left: 0;
+  right: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.selection-container select {
+  margin: 0 10px;
+  font-size: 16px;
+  font-weight: bold;
+  background-color: #fff;
+  border: none;
+  cursor: pointer;
+}
