@@ -6,7 +6,14 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import Home from './rutas/home';
 import About from './rutas/about';
 import PagEquiposFirst from './rutas/teams';
-import EquipoDetalle from './rutas/equipoDetalle';
+import SelectMatch from './rutas/seleccionPartido';
+import SelectPlayer from './rutas/selectPlayer';
+import PartidoDetalle from './rutas/matchDetail';
+import PlayerDetail from './rutas/playerDetail';
+import Login from './components/login';
+import EquipoDetalleP from './rutas/equipoDetalle copy';
+import ListaConfiguraciones from './rutas/myConfigurations';
+import ConfigurationDetail from './rutas/configurationDetail';
 
 const router = createBrowserRouter([
   {
@@ -18,13 +25,37 @@ const router = createBrowserRouter([
     element: <PagEquiposFirst />,
   },
   {
-    path: '/about',
-    element: <About />,
+    path: '/matches',
+    element: <SelectMatch />,
+  },
+  {
+    path: '/players',
+    element: <SelectPlayer />,
   },
   {
     path: '/teams/:id',
-    element: <EquipoDetalle />,
-  }
+    element: <EquipoDetalleP />,
+  },
+  {
+    path: '/matches/:id',
+    element: <PartidoDetalle />,
+  },
+  {
+    path: '/players/:id',
+    element: <PlayerDetail />,
+  },
+  {
+    path: '/login',
+    element: <Login />,
+  },
+  {
+    path: '/configs',
+    element: <ListaConfiguraciones />,
+  },
+  {
+    path: '/configs/:id',
+    element: <ConfigurationDetail />,
+  },
 ])
 
 const root = ReactDOM.createRoot(document.getElementById('root'));

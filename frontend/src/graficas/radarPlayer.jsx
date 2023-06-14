@@ -3,13 +3,14 @@ import Chart from 'chart.js/auto';
 import { useParams } from "react-router-dom";
 import axios from 'axios';
 
-function RadarChart({wyId}) {
+function RadarChartPlayer({ wyId}) {
     const [data, setData] = useState({
       goles: 0,
       pases: 0,
       tiros: 0,
       faltas: 0,
-      intercepciones: 0
+      intercepciones: 0,
+      asistencias: 0
     });
   
     const { id } = useParams();
@@ -20,7 +21,7 @@ function RadarChart({wyId}) {
     const chartInstance = useRef(); // Definir la variable chartInstance aquí
   
     useEffect(() => {
-        axios.get(`http://localhost:8000/api/events/teams/${param}/radar/`)
+        axios.get(`http://localhost:8000/api/events/players/${param}/radar/`)
           .then(response => setData(response.data))
           .catch(error => console.log(error));
       }, [id]);
@@ -35,7 +36,7 @@ function RadarChart({wyId}) {
         }
   
         const chartData = {
-          labels: ['Goles', 'Pases', 'Disparos', 'Faltas', 'Intercepciones'],
+          labels: ['Goles', 'Pases', 'Disparos', 'Faltas', 'Intercepciones', 'Asistencias'],
           datasets: [
             {
                 data: [
@@ -43,7 +44,8 @@ function RadarChart({wyId}) {
                     data && data.pases,
                     data && data.tiros,
                     data && data.faltas,
-                    data && data.intercepciones
+                    data && data.intercepciones,
+                    data && data.asistencias
                   ],
               borderColor: '#3f51b5',
               backgroundColor: 'rgba(63, 81, 181, 0.2)',
@@ -94,5 +96,5 @@ function RadarChart({wyId}) {
     );
   }
   
-  export default RadarChart;
+  export default RadarChartPlayer;
   

@@ -1,43 +1,21 @@
 from django.db import models
 
-# Create your models here.
-"""class Areas (models.Model):
-    id = models.PositiveIntegerField(primary_key=True)
-    name = models.CharField(max_length = 100,unique=True)
-    alpha3code = models.CharField(max_length=3)
-    alpha2code = models.CharField(max_length=2)
+from django.contrib.auth.models import AbstractUser,Group, Permission
 
-    def __str__(self):
-        return self.name
+class Usuario(AbstractUser):
+    nombre = models.CharField(max_length=255)
+    groups = models.ManyToManyField(Group, related_name='usuarios')
+    user_permissions = models.ManyToManyField(Permission, related_name='usuarios')
+    equipoId = models.IntegerField(null=True)
 
-class EventId2Names(models.Model):
-   event2nameId = models.AutoField(primary_key=True)
-   eventId = models.PositiveIntegerField(null=False)
-   subEventId = models.PositiveIntegerField(null=False)
-   eventLabel = models.TextField(blank=False)
-   subEventLabel = models.TextField(blank=False)
+class Configuracion(models.Model):
+    id = models.AutoField(primary_key=True)
+    nombre = models.CharField(max_length=255, null=False, default='Configuracion')
+    num_columns = models.IntegerField()
+    graficas_seleccionadas = models.JSONField()
+    wyId = models.IntegerField(null=False)
+    tipo = models.CharField(max_length=255, null=False, default='Configuracion')
 
-   def __str__(self):
-        return self.eventLabel
-
-
-class Competitions (models.Model):
-    name = models.TextField(max_length=10000,blank=False, null=False)
-    wyId = models.PositiveIntegerField(primary_key=True, null=False)
-    formato = models.CharField(blank=False, max_length = 100)
-    type = models.CharField(blank=False, max_length = 100)
-    image = models.ImageField()
-    areaId = models.ForeignKey(Areas, on_delete=models.CASCADE)
-
-    def __str__(self):
-        return self.name
-    
-class Tags2Name (models.Model):
-    tagId = models.PositiveIntegerField(primary_key=True, null=False)
-    description = models.TextField(null=False, blank=False)
-
-    def __str__(self):
-        return self.description"""
     
 class Teams (models.Model):
     city = models.TextField(null=False, blank=False)
@@ -135,44 +113,4 @@ class Events (models.Model):
    
 
 
-
-"""class Substitutions (models.Model):
-    id = models.AutoField(primary_key=True)
-    teamsDataId = models.ForeignKey(TeamsData, on_delete= models.CASCADE) 
-    playerInId = models.ForeignKey(Players, on_delete= models.CASCADE, related_name='player_in', null=True)
-    playerOutId = models.ForeignKey(Players, on_delete= models.CASCADE, related_name='player_out', null=True)
-    minute = models.PositiveIntegerField()
-    assists = models.PositiveIntegerField()
-
-    def __str__(self):
-        return str(self.id)
-    
-class LineUp (models.Model):
-    id = models.AutoField(primary_key=True)
-    teamsDataId = models.ForeignKey(TeamsData, on_delete= models.CASCADE)
-    playerId = models.ForeignKey(Players, on_delete= models.CASCADE, null=True)
-    ownGoals = models.PositiveIntegerField()
-    redCards = models.PositiveIntegerField()
-    goals = models.PositiveIntegerField()
-    yellowCards = models.PositiveIntegerField()
-    assists = models.PositiveIntegerField()
-
-    def __str__(self):
-        return str(self.id)
-    
-class Bench (models.Model):
-    id = models.AutoField(primary_key=True)
-    teamsDataId = models.ForeignKey(TeamsData, on_delete= models.CASCADE)
-    playerId = models.ForeignKey(Players, on_delete= models.CASCADE, null=True)
-    ownGoals = models.PositiveIntegerField()
-    redCards = models.PositiveIntegerField()
-    goals = models.PositiveIntegerField()
-    yellowCards = models.PositiveIntegerField()
-    assists = models.PositiveIntegerField()
-
-    def __str__(self):
-        return str(self.id)
-
-
-"""
 

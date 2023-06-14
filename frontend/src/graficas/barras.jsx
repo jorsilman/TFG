@@ -107,3 +107,109 @@ export function BarrasFaltas({events}) {
         
 }
 
+export function BarrasEventosJugador({events}) {
+    const chartRef = useRef();
+
+    useEffect(() => {
+        if (events.length > 0) {
+            const data = {
+            labels: events.map((event) => event.min),
+            datasets: [
+                {
+                label: 'Eventos',
+                data: events.map((event) => event.faltas),
+                backgroundColor: 'rgba(255, 99, 132, 0.2)',
+                borderColor: 'rgba(255, 99, 132, 1)',
+                borderWidth: 1,
+                },
+            ],
+            };
+
+            const myChart = new Chart(chartRef.current, {
+            type: 'bar',
+            data: data,
+            options: {
+                scales: {
+                yAxes: [
+                    {
+                    ticks: {
+                        beginAtZero: true,
+                        precision: 0,
+                    },
+                    },
+                ],
+                },
+                plugins: {
+                    legend: {
+                      display: false,
+                    },
+                }
+            },
+            });
+            return () => {
+                myChart.destroy();
+            };
+        }
+    }, [events]);
+        
+    return (
+        <div>
+          <canvas ref={chartRef} />
+        </div>
+    );
+        
+}
+
+export function BarrasEventosPorPartidoJugador({events}) {
+    const chartRef = useRef();
+
+    useEffect(() => {
+        if (events.length > 0) {
+            const data = {
+            labels: events.map((event) => event.min),
+            datasets: [
+                {
+                label: 'Eventos Por Partido',
+                data: events.map((event) => event.faltas),
+                backgroundColor: 'rgba(255, 99, 132, 0.2)',
+                borderColor: 'rgba(255, 99, 132, 1)',
+                borderWidth: 1,
+                },
+            ],
+            };
+
+            const myChart = new Chart(chartRef.current, {
+            type: 'bar',
+            data: data,
+            options: {
+                scales: {
+                yAxes: [
+                    {
+                    ticks: {
+                        beginAtZero: true,
+                        precision: 0,
+                    },
+                    },
+                ],
+                },
+                plugins: {
+                    legend: {
+                      display: false,
+                    },
+                }
+            },
+            });
+            return () => {
+                myChart.destroy();
+            };
+        }
+    }, [events]);
+        
+    return (
+        <div>
+          <canvas ref={chartRef} />
+        </div>
+    );
+        
+}
+

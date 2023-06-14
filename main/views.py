@@ -1,19 +1,124 @@
 from django.http import JsonResponse
 from django.shortcuts import render
+from django.urls import path
 from rest_framework import generics
 from rest_framework.decorators import api_view
 from main.models import *
 from main.populateDB import populate
-from .serializers import EventsSerializer, TeamsSerializer, MatchesSerializer
+from .serializers import EventsSerializer, TeamsSerializer, MatchesSerializer, PlayersSerializer
 from django.shortcuts import get_object_or_404
 from rest_framework.response import Response
 from django.views.decorators.csrf import csrf_exempt
+from django.views import View
+from django.views.generic import CreateView, ListView
+from django.http import JsonResponse
+from .models import Configuracion
 
 from django.db.models import Q
 
 from main import serializers
 
-#API
+from django.contrib.auth import login, authenticate
+from django.views import View
+
+# ======= LOGIN =======
+@csrf_exempt
+def login_view(request):
+    if request.method == 'POST':
+        username = request.POST.get('username')
+        password = request.POST.get('password')
+
+        if not username or not password:
+            return JsonResponse({'message': 'Por favor, ingresa nombre de usuario y contraseña'}, status=400)
+
+        user = authenticate(username=username, password=password)
+        if user is not None:
+            login(request, user)
+            return JsonResponse({'message': 'Inicio de sesión exitoso'})
+        else:
+            return JsonResponse({'message': 'Nombre de usuario o contraseña incorrectos'}, status=400)
+    else:
+        return JsonResponse({'message': 'Método no permitido'}, status=405)
+    
+@csrf_exempt
+def register(request):
+    if request.method == "POST":
+        username = request.POST.get('username')
+        password = request.POST.get('password')
+        nombre = request.POST.get('name')
+        if not username or not password or not nombre:
+            return JsonResponse({'message': 'Por favor, completa todos los campos'}, status=400)
+
+        try:
+            usuario = Usuario.objects.create_user(username=username, password=password)
+            usuario.nombre = nombre
+            usuario.save()
+            #login(request, usuario)
+            return JsonResponse({'message': 'Registro exitoso'})
+        except Exception as e:
+            return JsonResponse({'message': 'Error en el registro: {}'.format(str(e))}, status=400)
+    else:
+        return JsonResponse({'message': 'Método no permitido'}, status=405)
+
+# ======= CONFIGURACIÓN =======
+
+
+@csrf_exempt
+def configuracion(request):
+    if request.method == "POST":
+        nombre = request.POST.get('nombre')
+        num_columns = request.POST.get('num_columns')
+        graficas_seleccionadas = request.POST.get('graficas_seleccionadas')
+        wyId = request.POST.get('wyId')
+        tipo = request.POST.get('tipo')
+        print(nombre, num_columns, graficas_seleccionadas, wyId, tipo)
+        if not nombre or not num_columns or not graficas_seleccionadas or not wyId or not tipo:
+            return JsonResponse({'message': 'Por favor, completa todos los campos'}, status=400)
+        
+        try:
+            configuracion = Configuracion.objects.create(nombre=nombre, num_columns=num_columns, graficas_seleccionadas=graficas_seleccionadas, wyId=wyId, tipo=tipo)
+            configuracion.save()
+            return JsonResponse({'message': 'Configuración creada exitosamente'})
+        except Exception as e:
+            return JsonResponse({'message': 'Error en la creación de la configuración: {}'.format(str(e))}, status=400)
+    elif  request.method == "GET":
+        configuraciones = Configuracion.objects.all().values('id','nombre', 'num_columns', 'graficas_seleccionadas', 'wyId', 'tipo')
+        return JsonResponse({'configuraciones': list(configuraciones)})
+    else:
+        return JsonResponse({'message': 'Método no permitido'}, status=405)
+
+
+    
+@csrf_exempt
+def get_configuracion(request, id):
+    configuracion = Configuracion.objects.get(id=id)
+    id = configuracion.id
+    nombre = configuracion.nombre
+    num_columns = configuracion.num_columns
+    graficas_seleccionadas = configuracion.graficas_seleccionadas
+    wyId = configuracion.wyId
+    tipo = configuracion.tipo
+    data = {
+        'id': id,
+        'nombre': nombre,
+        'num_columns': num_columns,
+        'graficas_seleccionadas': graficas_seleccionadas,
+        'wyId': wyId,
+        'tipo': tipo
+    }
+    return JsonResponse(data)
+    
+@csrf_exempt
+def delete_configuracion(request, id):
+    if request.method == "DELETE":
+        configuracion = Configuracion.objects.filter(id=id)
+        configuracion.delete()
+        return JsonResponse({'message': 'Configuración eliminada exitosamente'})
+    else:
+        return JsonResponse({'message': 'Método no permitido'}, status=405)
+    
+
+
 
 
 # ======= EQUIPOS =======
@@ -192,50 +297,7 @@ def radarTeam(request, team_id):
     }
     return JsonResponse(data)
 
-def prueba(request):
-    teams = Teams.objects.all()
-    maxGoles = 0
-    maxPases = 0
-    maxTiros = 0
-    maxFaltas = 0
-    maxIntercepciones = 0
-    for team in teams:
-        events = Events.objects.filter(teamId=team.wyId)
-        goles = 0
-        pases = 0
-        tiros = 0
-        faltas = 0
-        intercepciones = 0
-        for event in events:
-            tags = EventsTags.objects.filter(eventId=event.id)
-            if event.eventName == "Shot":
-                tiros += 1
-            if event.eventName == "Pass":
-                pases += 1
-            if event.eventName == "Free Kick":
-                faltas += 1
-            if event.eventName == "Duel" and tags.filter(tagId=1801).exists():
-                intercepciones += 1
-            if tags.filter(tagId=101).exists() and ( event.eventName == "Shot" or event.eventName == "Free Kick" or event.eventName == "Pass"):
-                goles += 1
-        if goles > maxGoles:
-            maxGoles = goles
-        if pases > maxPases:
-            maxPases = pases
-        if tiros > maxTiros:
-            maxTiros = tiros
-        if faltas > maxFaltas:
-            maxFaltas = faltas
-        if intercepciones > maxIntercepciones:
-            maxIntercepciones = intercepciones
-    data = {
-        "goles": maxGoles,
-        "pases": maxPases,
-        "tiros": maxTiros,
-        "faltas": maxFaltas,
-        "intercepciones": maxIntercepciones
-    }
-    return JsonResponse(data)
+
 
 def barrasDivergentes(request, team_id):
     ataqueDic = {"0-10": 0, "10-20": 0, "20-30": 0, "30-40": 0, "40-50": 0, "50-60": 0, "60-70": 0, "70-80": 0, "80-90": 0}
@@ -658,4 +720,97 @@ def barrasDivergentesPartido(request, match_id):
         data.append([key, ataqueLocal[key], -ataqueVisitante[key]])
 
     return JsonResponse(data, safe=False)
+
+
+# ==== Jugadores ====
+class PlayerList(generics.ListAPIView):
+    queryset = Players.objects.all()
+    serializer_class = PlayersSerializer
+
+class GoalPlayerEvents(generics.ListAPIView):
+    serializer_class = EventsSerializer
+
+    def get_queryset(self):
+        player_id = self.kwargs['player_id']
+        GoalPlayerEvents = Events.objects.filter(Q(playerId=player_id) & Q(tags__id=101))
+
+        return GoalPlayerEvents
+    
+class FoulPlayerEvents(generics.ListAPIView):
+    serializer_class = EventsSerializer
+
+    def get_queryset(self):
+        player_id = self.kwargs['player_id']
+        events = Events.objects.filter(playerId=player_id, eventName = "Foul")
+        return events
+
+class AssistPlayerEvents(generics.ListAPIView):
+    serializer_class = EventsSerializer
+
+    def get_queryset(self):
+        player_id = self.kwargs['player_id']
+        AssistPlayerEvents = Events.objects.filter(Q(playerId=player_id) & Q(tags__id=301))
+        return AssistPlayerEvents
+
+class FreeKickPlayerEvents(generics.ListAPIView):
+    serializer_class = EventsSerializer
+
+    def get_queryset(self):
+        player_id = self.kwargs['player_id']
+        FreeKickPlayerEvents = Events.objects.filter(playerId=player_id, eventName = "Free Kick")
+        return FreeKickPlayerEvents
+    
+@csrf_exempt
+def radarPlayer(request, player_id):
+    goles = Events.objects.filter(Q(playerId=player_id) & (Q(eventName="Shot") | Q(eventName="Free Kick") | Q(eventName="Pass")) & Q(tags__id=101)).count()
+    pases = Events.objects.filter(Q(playerId=player_id) & Q(eventName="Pass")).count()
+    tiros = Events.objects.filter(Q(playerId=player_id) & Q(eventName="Shot")).count()
+    faltas = Events.objects.filter(Q(playerId=player_id) & Q(eventName="Foul")).count()
+    intercepciones = Events.objects.filter(Q(playerId=player_id) & Q(eventName="Duel") & Q(tags__id=1801)).count()
+    asitencias = Events.objects.filter(Q(playerId=player_id) & Q(tags__id=301)).count()
+    
+    data = {
+        "goles": goles/34,
+        "pases": pases/2417,
+        "tiros": tiros/151,
+        "faltas": faltas/87,
+        "intercepciones": intercepciones/685,
+        "asistencias": asitencias/13
+    }
+    return JsonResponse(data)
+
+
+
+@csrf_exempt
+def barrasPlayer(request, player_id):
+    goles = Events.objects.filter(Q(playerId=player_id) & Q(tags__id=101)).count()
+    tiros = Events.objects.filter(Q(playerId=player_id) & Q(eventName="Shot")).count()
+    faltas = Events.objects.filter(Q(playerId=player_id) & Q(eventName="Foul")).count()
+    asistencias = Events.objects.filter(Q(playerId=player_id) & Q(tags__id=301)).count()
+    
+    data = {
+        "goles": goles,
+        "tiros": tiros,
+        "faltas": faltas,
+        "asistencias": asistencias
+    }
+    return JsonResponse(data)
+
+@csrf_exempt
+def eventosPorPartido(request, player_id):
+    partidos = Events.objects.filter(playerId=player_id).values("matchId").distinct().count()
+    goles = Events.objects.filter(Q(playerId=player_id) & (Q(eventName="Shot") | Q(eventName="Free Kick")) & Q(tags__id=101)).count()
+    faltas = Events.objects.filter(Q(playerId=player_id) & Q(eventName="Foul")).count()
+    asitencias = Events.objects.filter(Q(playerId=player_id) & Q(tags__id=301)).count()
+    amarillas = Events.objects.filter(Q(playerId=player_id) &  Q(tags__id=1702)).count()
+    rojas = Events.objects.filter(Q(playerId=player_id) &  Q(tags__id=1701)).count()
+    data = {
+        "goles": goles/partidos,
+        "faltas": faltas/partidos,
+        "asitencias": asitencias/partidos,
+        "amarillas": amarillas/partidos,
+        "rojas": rojas/partidos
+
+    }
+    return JsonResponse(data)
 

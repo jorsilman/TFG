@@ -81,7 +81,7 @@ WSGI_APPLICATION = 'Centro_De_Mandos_Configurable.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'eventostfg',
+        'NAME': 'centro_de_mandos_configurable',
         'USER': 'root',
         'PASSWORD': 'root',
         'HOST': 'localhost',

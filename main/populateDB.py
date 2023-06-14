@@ -68,7 +68,7 @@ def populateCompetitions():
 def populateTeams():
     Teams.objects.all().delete()
     lista = []
-    with open(path+'\\teams.json', encoding="utf-8") as f:
+    with open(path+'\\teams.json', encoding="iso-8859-1") as f:
         data = json.load(f)
         for item in data:
             # Create and save the team object
@@ -87,7 +87,7 @@ def populatePlayers():
     Players.objects.all().delete()
     Roles.objects.all().delete()
     lista = []
-    with open(path+'\\players.json', encoding="utf-8") as f:
+    with open(path+'\\players.json', encoding="iso-8859-1") as f:
         data = json.load(f)
         for item in data:
             role_data = item['role']
@@ -137,9 +137,9 @@ def populateMatches():
     partidos = []
     datos = []
 
-    with open(path+'\\matches\list_of_matches.txt', 'r', encoding="utf-8") as nombres:
+    with open(path+'\\matches\list_of_matches.txt', 'r', encoding="iso-8859-1") as nombres:
         for archivo in nombres:
-            with open('data\matches\\'+archivo.strip()) as f:
+            with open('data\matches\\'+archivo.strip(), encoding="iso-8859-1") as f:
                 data = json.load(f)
                 for item in data:
                     status = item['status']
@@ -193,7 +193,7 @@ def popolateEvents():
 
 
     
-    with open('data\events\events_Spain.json', encoding="utf-8") as f:
+    with open('data\events\events_Spain.json', encoding="iso-8859-1") as f:
         data = json.load(f)
         for item in data:
             tags = []

@@ -14,12 +14,17 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import path
+from django.urls import include, path
 from main import views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('',views.index),
+    path('register/', views.register, name='registro'),
+    path('login/', views.login_view, name='inicio_sesion'),
+    path('configuraciones/', views.configuracion, name='configuraciones'),
+    path('configuraciones/<int:id>/', views.get_configuracion, name='get_configuracion'),
+    path('configuraciones/<int:id>/delete/', views.delete_configuracion, name='delete_configuracion'),
     path('populate/', views.populateDatabase),
     path('api/teams/', views.TeamList.as_view()),
     path('api/events/teams/<int:team_id>/', views.EventsList.as_view()),
@@ -48,5 +53,14 @@ urlpatterns = [
     path('api/events/matches/<int:match_id>/goalsByMinute/', views.golesPorMinutoPartido),
     path('api/events/matches/<int:match_id>/passesByMinute/', views.pasesPorMinutoPartido),
     path('api/events/matches/<int:match_id>/divergentChart/', views.barrasDivergentesPartido),
+    path('api/players/', views.PlayerList.as_view()),
+    path('api/events/players/<int:player_id>/goals/', views.GoalPlayerEvents.as_view()),
+    path('api/events/players/<int:player_id>/fouls/', views.FoulPlayerEvents.as_view()),
+    path('api/events/players/<int:player_id>/assitant/', views.AssistPlayerEvents.as_view()),
+    path('api/events/players/<int:player_id>/free_kicks/', views.FreeKickPlayerEvents.as_view()),
+    path('api/events/players/<int:player_id>/radar/', views.radarPlayer),  
+    path('api/events/players/<int:player_id>/events_count/', views.barrasPlayer),  
+    path('api/events/players/<int:player_id>/events_by_match/', views.eventosPorPartido),   
+
 
 ]

@@ -7,7 +7,7 @@ import { Sankey } from "../graficas/sankey";
 import {TopAssistantsChart, TopScorersChart} from "../graficas/topGoleadores";
 import DivergingChartTeam from "../graficas/divergingTeam";
 
-export function PosicionesGoles({wyId}) {
+export function PosicionesGolesMatch({wyId}) {
     const [events, setEvents] = useState([]);
     
     const { id } = useParams();
@@ -15,7 +15,7 @@ export function PosicionesGoles({wyId}) {
     const param = wyId ? wyId : id;
 
     useEffect(() => {
-        axios.get('http://localhost:8000/api/events/teams/' + param + '/goals/')
+        axios.get('http://localhost:8000/api/events/matches/' + param + '/goals/')
         .then(response => {
             setEvents(response.data);
         })
@@ -32,7 +32,7 @@ export function PosicionesGoles({wyId}) {
 
 }
 
-export function PosicionesAsistencias({wyId}) {
+export function PosicionesAsistenciasMatch({wyId}) {
     const [events, setEvents] = useState([]);
     
     const { id } = useParams();
@@ -40,7 +40,7 @@ export function PosicionesAsistencias({wyId}) {
     const param = wyId ? wyId : id;
 
     useEffect(() => {
-        axios.get('http://localhost:8000/api/events/teams/' + param + '/assitant/')
+        axios.get('http://localhost:8000/api/events/matches/' + param + '/assitant/')
         .then(response => {
             setEvents(response.data);
         })
@@ -57,7 +57,7 @@ export function PosicionesAsistencias({wyId}) {
 
 }
 
-export function PosicionesFaltas({wyId}) {
+export function PosicionesFaltasMatch({wyId}) {
     const [events, setEvents] = useState([]);
     
     const { id } = useParams();
@@ -65,7 +65,7 @@ export function PosicionesFaltas({wyId}) {
     const param = wyId ? wyId : id;
 
     useEffect(() => {
-        axios.get('http://localhost:8000/api/events/teams/' + param + '/fouls/')
+        axios.get('http://localhost:8000/api/events/matches/' + param + '/fouls/')
         .then(response => {
             setEvents(response.data);
         })
@@ -82,7 +82,7 @@ export function PosicionesFaltas({wyId}) {
 
 }
 
-export function PosicionesTirosLibres({wyId}){
+export function PosicionesTirosLibresMatch({wyId}){
     const [events, setEvents] = useState([]);
     
     const { id } = useParams();
@@ -90,7 +90,7 @@ export function PosicionesTirosLibres({wyId}){
     const param = wyId ? wyId : id;
 
     useEffect(() => {
-        axios.get('http://localhost:8000/api/events/teams/' + param + '/free_kicks/')
+        axios.get('http://localhost:8000/api/events/matches/' + param + '/free_kicks/')
         .then(response => {
             setEvents(response.data);
         })
@@ -107,7 +107,7 @@ export function PosicionesTirosLibres({wyId}){
 
 }
 
-export function GolesPorMinuto({wyId}){
+export function GolesPorMinutoMatch({wyId}){
     const [events, setEvents] = useState([]);
     
     const { id } = useParams();
@@ -115,7 +115,7 @@ export function GolesPorMinuto({wyId}){
     const param = wyId ? wyId : id;
 
     useEffect(() => {
-        axios.get('http://localhost:8000/api/events/teams/' + param + '/goalsByMinute/')
+        axios.get('http://localhost:8000/api/events/matches/' + param + '/goalsByMinute/')
         .then(response => {
             setEvents(response.data);
         })
@@ -131,7 +131,7 @@ export function GolesPorMinuto({wyId}){
     );
 }
 
-export function FaltasPorMinuto({wyId}){
+export function FaltasPorMinutoMatch({wyId}){
     const [events, setEvents] = useState([]);
     
     const { id } = useParams();
@@ -139,7 +139,7 @@ export function FaltasPorMinuto({wyId}){
     const param = wyId ? wyId : id;
 
     useEffect(() => {
-        axios.get('http://localhost:8000/api/events/teams/' + param + '/foulsByMinute/')
+        axios.get('http://localhost:8000/api/events/matches/' + param + '/foulsByMinute/')
         .then(response => {
             setEvents(response.data);
         })
@@ -155,36 +155,8 @@ export function FaltasPorMinuto({wyId}){
     );
 }
 
-export function SankeyTeam({wyId}){
 
-    const [events, setEvents] = useState([]);
-    
-    const { id } = useParams();
-
-    const param = wyId ? wyId : id;
-
-    useEffect(() => {
-        axios.get('http://localhost:8000/api/events/teams/' + param + '/sankey/')
-        .then(response => {
-            setEvents(response.data);
-        })
-        .catch(error => {
-            console.log(error);
-        });
-    }, [id]);
-
-    return (
-        <div>
-            {events.length > 0 ? (
-                <Sankey events={events} />
-            ) : (
-                <p>Cargando...</p>
-            )}
-        </div>
-    );
-}
-
-export function TopGoleadores({wyId}){
+export function TopGoleadoresMatch({wyId}){
     const [data, setData] = useState(null);
 
     const { id } = useParams();
@@ -192,7 +164,7 @@ export function TopGoleadores({wyId}){
     const param = wyId ? wyId : id;
 
     useEffect(() => {
-        axios.get('http://localhost:8000/api/events/teams/' + param + '/topScorers/')
+        axios.get('http://localhost:8000/api/events/matches/' + param + '/topScorers/')
         .then(response => {
             setData(response.data);
         })
@@ -212,7 +184,7 @@ export function TopGoleadores({wyId}){
     );
 }
 
-export function TopAsistencias({wyId}){
+export function TopAsistenciasMatch({wyId}){
     const [data, setData] = useState(null);
 
     const { id } = useParams();
@@ -220,7 +192,7 @@ export function TopAsistencias({wyId}){
     const param = wyId ? wyId : id;
 
     useEffect(() => {
-        axios.get('http://localhost:8000/api/events/teams/' + param + '/topAssistants/')
+        axios.get('http://localhost:8000/api/events/matches/' + param + '/topAssistants/')
         .then(response => {
             setData(response.data);
         })
@@ -240,7 +212,7 @@ export function TopAsistencias({wyId}){
     );
 }
 
-export function DivergingChart({wyId}){
+export function DivergingChartMatch({wyId}){
     const [data, setData] = useState(null);
 
     const { id } = useParams();
@@ -248,7 +220,7 @@ export function DivergingChart({wyId}){
     const param = wyId ? wyId : id;
 
     useEffect(() => {
-        axios.get('http://localhost:8000/api/events/teams/' + param + '/divergingChart/')
+        axios.get('http://localhost:8000/api/events/matches/' + param + '/divergentChart/')
         .then(response => {
             setData(response.data);
         })
