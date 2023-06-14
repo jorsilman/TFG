@@ -1,9 +1,9 @@
 .grid-container {
   display: flex;
   flex-direction: column;
-  height: 100vh; /* Establece la altura del contenedor a la altura de la ventana del navegador */
-  overflow: hidden; /* Evita que se muestre la barra de desplazamiento */
-  position: relative; /* Establece la posición del contenedor */
+  height: 100vh;
+  overflow: hidden;
+  position: relative;
 }
 
 .grid-layout {
@@ -13,7 +13,7 @@
   grid-template-rows: repeat(2, 1fr);
   gap: 20px;
   padding: 20px;
-  height: calc(100vh - 50px); /* Establece la altura del grid-layout */
+  height: calc(100vh - 50px);
 }
 
 nav {
@@ -22,10 +22,10 @@ nav {
   align-items: center;
   height: 50px;
   background-color: #f2f2f2;
-  position: absolute; /* Establece la posición del elemento en relación al contenedor */
-  top: 0; /* Establece la posición superior del elemento */
-  left: 0; /* Establece la posición izquierda del elemento */
-  right: 0; /* Establece la posición derecha del elemento */
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
 }
 
 nav button {
@@ -62,9 +62,9 @@ nav button {
   display: flex;
   justify-content: center;
   align-items: center;
+  
 }
 
-/* Agregado para fijar el select en la parte superior del contenedor */
 .selection-container {
   position: absolute;
   top: 50px;
@@ -83,3 +83,28 @@ nav button {
   border: none;
   cursor: pointer;
 }
+
+.seleccion-grafica {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  width: 100%;
+}
+
+.grafica-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-grow: 1;
+}
+
+.grafica {
+  width: 100%;
+  height: 100%;
+}
+
+.selec-char {
+ padding: 0%;
+}
+
+

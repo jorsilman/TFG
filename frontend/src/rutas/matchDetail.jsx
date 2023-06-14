@@ -61,7 +61,7 @@ function PartidoDetalle() {
         <nav>
           <button onClick={() => handleColumnChange(3)}>3</button>
           <button onClick={() => handleColumnChange(4)}>4</button>
-          <button onClick={() => handleColumnChange(6)}>6</button>
+          <button onClick={() => handleColumnChange(6)}>6</button> 
         </nav>
         <div className={`grid-layout columns-${numColumns}`}>
           {Array.from({ length: numColumns }).map((_, index) => (
@@ -76,11 +76,13 @@ function PartidoDetalle() {
           ))}
         </div>
       </div>
-      <div>
-        <label htmlFor="nombre">Nombre:</label>
-        <input type="text" id="nombre" value={nombre} onChange={handleNombreChange} />
-        <button onClick={handleGuardarConfiguracion}>Guardar</button>
+      <div className="mb-3">
+          <label htmlFor="nombre" className="form-label">Nombre:</label>
+          <input type="text" id="nombre" className="form-control" value={nombre} onChange={handleNombreChange} />
+          <button className="btn btn-primary mt-3" onClick={handleGuardarConfiguracion}>Guardar</button>
       </div>
+      
+      
       {/* <Footer /> */}
     </div>
   );

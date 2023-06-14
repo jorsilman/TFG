@@ -4,7 +4,6 @@ import reportWebVitals from './reportWebVitals';
 import {createBrowserRouter, RouterProvider} from 'react-router-dom';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import Home from './rutas/home';
-import About from './rutas/about';
 import PagEquiposFirst from './rutas/teams';
 import SelectMatch from './rutas/seleccionPartido';
 import SelectPlayer from './rutas/selectPlayer';

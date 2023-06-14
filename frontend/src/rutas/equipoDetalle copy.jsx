@@ -64,6 +64,8 @@ function EquipoDetalleP() {
           <button onClick={() => handleColumnChange(4)}>4</button>
           <button onClick={() => handleColumnChange(6)}>6</button>
         </nav>
+        <br />
+        <br />
         <div className={`grid-layout columns-${numColumns}`}>
           {Array.from({ length: numColumns }).map((_, index) => (
             <div key={index} className="grid-item">
@@ -77,10 +79,10 @@ function EquipoDetalleP() {
           ))}
         </div>
       </div>
-      <div>
-        <label htmlFor="nombre">Nombre:</label>
-        <input type="text" id="nombre" value={nombre} onChange={handleNombreChange} />
-        <button onClick={handleGuardarConfiguracion}>Guardar</button>
+      <div className="mb-3">
+          <label htmlFor="nombre" className="form-label">Nombre:</label>
+          <input type="text" id="nombre" className="form-control" value={nombre} onChange={handleNombreChange} />
+          <button className="btn btn-primary mt-3" onClick={handleGuardarConfiguracion}>Guardar</button>
       </div>
       {/* <Footer /> */}
     </div>
@@ -93,7 +95,7 @@ function SeleccionGrafica({ graficaSeleccionada, onGraficaSeleccionada }) {
   };
 
   return (
-    <div>
+    <div className="selec-char">
       <div className="nav-container">
         <select value={graficaSeleccionada} onChange={handleChange}>
           <option value="">Selecciona una gráfica</option>
@@ -111,18 +113,21 @@ function SeleccionGrafica({ graficaSeleccionada, onGraficaSeleccionada }) {
           <option value="grafica12">Ataque-Defensa</option>
         </select>
       </div>
-      {graficaSeleccionada === "grafica1" && <PosicionesGoles />}
-      {graficaSeleccionada === "grafica2" && <CoeficienteAtaqueEquipo />}
-      {graficaSeleccionada === "grafica3" && <RadarChart />}
-      {graficaSeleccionada === "grafica4" && <PosicionesAsistencias />}
-      {graficaSeleccionada === "grafica5" && <PosicionesFaltas />}
-      {graficaSeleccionada === "grafica6" && <PosicionesTirosLibres />}
-      {graficaSeleccionada === "grafica7" && <TopGoleadores />}
-      {graficaSeleccionada === "grafica8" && <GolesPorMinuto />}
-      {graficaSeleccionada === "grafica9" && <FaltasPorMinuto />}
-      {graficaSeleccionada === "grafica10" && <SankeyTeam />}
-      {graficaSeleccionada === "grafica11" && <TopAsistencias />}
-      {graficaSeleccionada === "grafica12" && <DivergingChart />}
+      <br />
+      <div className="seleccion-grafica">
+      {graficaSeleccionada === "grafica1" && <div class="grafica-container"><PosicionesGoles /></div>}
+      {graficaSeleccionada === "grafica2" && <div class="grafica-container"><CoeficienteAtaqueEquipo /></div>}
+      {graficaSeleccionada === "grafica3" && <div class="grafica-container"><RadarChart /></div>}
+      {graficaSeleccionada === "grafica4" && <div class="grafica-container"><PosicionesAsistencias /></div>}
+      {graficaSeleccionada === "grafica5" && <div class="grafica-container"><PosicionesFaltas /></div>}
+      {graficaSeleccionada === "grafica6" && <div class="grafica-container"><PosicionesTirosLibres /></div>}
+      {graficaSeleccionada === "grafica7" && <div class="grafica-container"><TopGoleadores /></div>}
+      {graficaSeleccionada === "grafica8" && <div class="grafica-container"><GolesPorMinuto /></div>}
+      {graficaSeleccionada === "grafica9" && <div class="grafica-container"><FaltasPorMinuto /></div>}
+      {graficaSeleccionada === "grafica10" && <div class="grafica-container"><SankeyTeam /></div>}
+      {graficaSeleccionada === "grafica11" && <div class="grafica-container"><TopAsistencias /></div>}
+      {graficaSeleccionada === "grafica12" && <div class="grafica-container"><DivergingChart /></div>}
+      </div>
     </div>
   );
 }

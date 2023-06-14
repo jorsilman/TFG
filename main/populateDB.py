@@ -5,90 +5,36 @@ from main.models import Events, Matches, Players, Roles,Tags, Teams,TeamsData
 
 path='data'
 
-"""def populateEventId2Names():
 
-    EventId2Names.objects.all().delete()
-    lista = []
-
-    with open(path+'\\eventid2name.csv') as csvfile:
-        reader = csv.DictReader(csvfile)
-        for row in reader:
-            event_id = int(row['event'])
-            subevent_id = int(row['subevent'])
-            event_label = row['event_label']
-            subevent_label = row['subevent_label']
-            lista.append(EventId2Names(eventId=event_id, subEventId=subevent_id, eventLabel=event_label, subEventLabel=subevent_label))
-  
-    EventId2Names.objects.bulk_create(lista)
-
-def populateTags2Name():
-    Tags2Name.objects.all().delete()
-    lista = []
-    with open(path+'\\tags2name.csv') as csvfile:
-        reader = csv.DictReader(csvfile, delimiter=';')
-        for row in reader:
-            tagId = int(row['Tag'])
-            description = row['Description']
-            lista.append(Tags2Name(tagId = tagId, description=description))
-    Tags2Name.objects.bulk_create(lista)
-
-def populateCompetitions():
-    Competitions.objects.all().delete()
-    Areas.objects.all().delete()
-    lista = []
-    with open(path+'\\competitions.json') as f:
-        data = json.load(f)
-        for item in data:
-            area_data = item['area']
-            area_id = int(area_data['id'])
-            if not Areas.objects.filter(id=area_id).exists():
-
-                area_name = area_data['name']
-                alpha3code = area_data['alpha3code']
-                alpha2code = area_data['alpha2code']
-
-                area = Areas(id=area_id, name=area_name, alpha3code=alpha3code, alpha2code=alpha2code)
-
-                area.save()
-            else:
-                area = Areas.objects.get(id = area_id)
-
-            
-            competition_name = item['name']
-            competition_id = int(item['wyId'])
-            competition_format = item['format']
-            competition_type = item['type']
-            competition_image = 'data\images\default.png' 
-            
-            competition = Competitions(name=competition_name, wyId=competition_id, formato=competition_format, 
-                                    type=competition_type, image=competition_image, areaId=area)
-            lista.append(competition)
-    Competitions.objects.bulk_create(lista)"""
 
 def populateTeams():
     Teams.objects.all().delete()
     lista = []
     with open(path+'\\teams.json', encoding="iso-8859-1") as f:
-        data = json.load(f)
+        datau = json.load(f)
+        data = json.loads(json.dumps(datau))
         for item in data:
-            # Create and save the team object
+            item['name'] = item['name'].encode('latin-1').decode('unicode_escape')
+            item['city'] = item['city'].encode('latin-1').decode('unicode_escape')
+            item['officialName'] = item['officialName'].encode('latin-1').decode('unicode_escape')
+
             team = Teams(city=item['city'],
                          name=item['name'],
                          wyId=int(item['wyId']),
                          officialName=item['officialName'],
                          type=item['type'],
-                         image = 'data\images\default.png')
+                         image='data\images\default.png')
             lista.append(team)
     Teams.objects.bulk_create(lista)
 
-print("Terminado equipos")
 
 def populatePlayers():
     Players.objects.all().delete()
     Roles.objects.all().delete()
     lista = []
     with open(path+'\\players.json', encoding="iso-8859-1") as f:
-        data = json.load(f)
+        datau = json.load(f)
+        data = json.loads(json.dumps(datau))
         for item in data:
             role_data = item['role']
             role_code2 = role_data['code2']
@@ -113,6 +59,12 @@ def populatePlayers():
             else:
                 nTeam = None
 
+            item['firstName'] = item['firstName'].encode('latin-1').decode('unicode_escape')
+            item['middleName'] = item['middleName'].encode('latin-1').decode('unicode_escape')
+            item['lastName'] = item['lastName'].encode('latin-1').decode('unicode_escape')
+            item['shortName'] = item['shortName'].encode('latin-1').decode('unicode_escape')
+
+
             player = Players(weight=int(item['weight']), 
                              firstName=item['firstName'], 
                              middleName=item['middleName'], 
@@ -128,7 +80,7 @@ def populatePlayers():
             lista.append(player)
     Players.objects.bulk_create(lista)
 
-print("Terminado jugadores")
+
 
 def populateMatches():
     Matches.objects.all().delete()
@@ -140,8 +92,13 @@ def populateMatches():
     with open(path+'\\matches\list_of_matches.txt', 'r', encoding="iso-8859-1") as nombres:
         for archivo in nombres:
             with open('data\matches\\'+archivo.strip(), encoding="iso-8859-1") as f:
-                data = json.load(f)
+                datau = json.load(f)
+                data = json.loads(json.dumps(datau))
                 for item in data:
+                    item['venue'] = item['venue'].encode('latin-1').decode('unicode_escape')
+                    item['label'] = item['label'].encode('latin-1').decode('unicode_escape')
+                    item['duration'] = item['duration'].encode('latin-1').decode('unicode_escape')
+
                     status = item['status']
                     roundId = int(item['roundId'])
                     gameWeek = int(item['gameweek'])
@@ -182,7 +139,7 @@ def populateMatches():
     Matches.objects.bulk_create(partidos)
     TeamsData.objects.bulk_create(datos)
 
-print("Terminado partidos")
+
 
                         
     
@@ -257,14 +214,10 @@ def popolateEvents():
             e.tags.set(tags)
 
                     
-print("Terminado eventos")
+
 
 def populate():
     populateTeams()
-    print("Terminado equipos")
     populatePlayers()
-    print("Terminado jugadores")
     populateMatches()
-    print("Terminado partidos")
     popolateEvents()
-    print("Terminado eventos")
