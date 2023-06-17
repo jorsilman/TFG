@@ -98,7 +98,7 @@ DATABASES = {
         'ENGINE': 'mysql.connector.django',
         'NAME': 'centro_de_mandos_configurable',
         'USER': 'root',
-        'HOST': os.environ.get('DB_HOST', 'db'),
+        'HOST': 'db',
         'PASSWORD': 'root',
         'PORT': '3306',
     }

@@ -13,9 +13,9 @@ services:
       context: .
       dockerfile: Dockerfile.mysql
     environment:
-      - MYSQL_DATABASE='centro_de_mandos_configurable'
-      - MYSQL_PASSWORD='root'
-      - MYSQL_ROOT_PASSWORD='root'
+      - MYSQL_DATABASE=centro_de_mandos_configurable
+      - MYSQL_PASSWORD=root
+      - MYSQL_ROOT_PASSWORD=root
     ports:
       - "3307:3306"
     volumes:
@@ -29,8 +29,6 @@ services:
       - '8000:8000'
     depends_on:
       - db
-    environment:
-      - DB_HOST=db
   # mysql:
   #   build:
   #     context: .
