@@ -29,6 +29,8 @@ services:
       - '8000:8000'
     depends_on:
       - db
+    environment:
+      - DB_HOST=db
   # mysql:
   #   build:
   #     context: .
