@@ -1,0 +1,20 @@
+# Imagen base para React
+FROM node:14
+
+# Establecer el directorio de trabajo
+WORKDIR /app/frontend
+
+# Copiar los archivos de React
+COPY frontend/ /app/frontend/
+
+# Instalar dependencias de React
+RUN npm install
+
+# Puerto en el que se ejecutará el servidor de desarrollo de React
+EXPOSE 3000
+
+# Comando para ejecutar React
+CMD npm run start
+
+
+
