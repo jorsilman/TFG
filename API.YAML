@@ -1,0 +1,598 @@
+openapi: 3.0.0
+info:
+  title: Django API Documentation
+  version: 1.0.0
+paths:
+  /configuraciones/:
+    get:
+      summary: Configurations List
+      description: Get a list of configurations.
+      responses:
+        '200':
+          description: Successful operation
+        '400':
+          description: Bad request
+    post:
+      summary: Create Configuration
+      description: Create a new configuration.
+      responses:
+        '200':
+          description: Successful operation
+        '400':
+          description: Bad request
+  /configuraciones/{id}/:
+    get:
+      summary: Get Configuration
+      description: Get details of a specific configuration.
+      parameters:
+        - name: id
+          in: path
+          description: ID of the configuration
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Successful operation
+        '400':
+          description: Bad request
+    delete:
+      summary: Delete Configuration
+      description: Delete a specific configuration.
+      parameters:
+        - name: id
+          in: path
+          description: ID of the configuration
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Successful operation
+        '400':
+          description: Bad request
+  /api/teams/:
+    get:
+      summary: Team List
+      description: Get a list of teams.
+      responses:
+        '200':
+          description: Successful operation
+        '400':
+          description: Bad request
+  /api/events/teams/{team_id}/:
+    get:
+      summary: Event List by Team
+      description: Get a list of events for a specific team.
+      parameters:
+        - name: team_id
+          in: path
+          description: ID of the team
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Successful operation
+        '400':
+          description: Bad request          
+  /api/events/teams/{team_id}/goals/:
+    get:
+      summary: Goal Events by Team
+      description: Get a list of goal events for a specific team.
+      parameters:
+        - name: team_id
+          in: path
+          description: ID of the team
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Successful operation
+        '400':
+          description: Bad request
+  /api/events/teams/{team_id}/assitant/:
+    get:
+      summary: Assist Events by Team
+      description: Get a list of assist events for a specific team.
+      parameters:
+        - name: team_id
+          in: path
+          description: ID of the team
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Successful operation
+        '400':
+          description: Bad request
+  api/events/teams/{team_id}/fouls/:
+    get:
+      summary: Foul Events by Team
+      description: Get a list of foul events for a specific team.
+      parameters:
+        - name: team_id
+          in: path
+          description: ID of the team
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Successful operation
+        '400':
+          description: Bad request
+  /api/events/teams/{team_id}/free_kicks/:
+    get:
+      summary: Free Kick Events by Team
+      description: Get a list of free kick events for a specific team.
+      parameters:
+        - name: team_id
+          in: path
+          description: ID of the team
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Successful operation
+        '400':
+          description: Bad request
+  /api/events/teams/{team_id}/attack/:
+    get:
+      summary: Attack Coefficient by Team
+      description: Get the attack coefficient for a specific team.
+      parameters:
+        - name: team_id
+          in: path
+          description: ID of the team
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Successful operation
+        '400':
+          description: Bad request
+  /api/events/teams/{team_id}/radar/:
+    get:
+      summary: Radar Chart by Team
+      description: Get the radar chart data for a specific team.
+      parameters:
+        - name: team_id
+          in: path
+          description: ID of the team
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Successful operation
+        '400':
+          description: Bad request
+  /api/events/teams/{team_id}/topScorers/:
+    get:
+      summary: Top Scorers by Team
+      description: Get a list of top scorers for a specific team.
+      parameters:
+        - name: team_id
+          in: path
+          description: ID of the team
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Successful operation
+        '400':
+          description: Bad request
+  /api/events/teams/{team_id}/topAssistants/:
+    get:
+      summary: Top Assistants by Team
+      description: Get a list of top assistants for a specific team.
+      parameters:
+        - name: team_id
+          in: path
+          description: ID of the team
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Successful operation
+        '400':
+          description: Bad request
+  /api/events/teams/{team_id}/goalsByMinute/:
+    get:
+      summary: Goals by Minute by Team
+      description: Get the distribution of goals by minute for a specific team.
+      parameters:
+        - name: team_id
+          in: path
+          description: ID of the team
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Successful operation
+        '400':
+          description: Bad request
+  /api/events/teams/{team_id}/foulsByMinute/:
+    get:
+      summary: Fouls by Minute by Team
+      description: Get the distribution of fouls by minute for a specific team.
+      parameters:
+        - name: team_id
+          in: path
+          description: ID of the team
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Successful operation
+        '400':
+          description: Bad request
+  /api/events/teams/{team_id}/divergingChart/:
+    get:
+      summary: Diverging Chart by Team
+      description: Get the diverging chart data for a specific team.
+      parameters:
+        - name: team_id
+          in: path
+          description: ID of the team
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Successful operation
+        '400':
+          description: Bad request
+  /api/events/teams/{team_id}/sankey/:
+    get:
+      summary: Sankey Diagram by Team
+      description: Get the sankey diagram data for a specific team.
+      parameters:
+        - name: team_id
+          in: path
+          description: ID of the team
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Successful operation
+        '400':
+          description: Bad request
+  /api/matches/:
+    get:
+      summary: Match List
+      description: Get a list of matches.
+      responses:
+        '200':
+          description: Successful operation
+        '400':
+          description: Bad request
+  /api/events/matches/{match_id}/goals/:
+    get:
+      summary: Goal Events by Match
+      description: Get a list of goal events for a specific match.
+      parameters:
+        - name: match_id
+          in: path
+          description: ID of the match
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Successful operation
+        '400':
+          description: Bad request
+  /api/events/matches/{match_id}/assitant/:
+    get:
+      summary: Assist Events by Match
+      description: Get a list of assist events for a specific match.
+      parameters:
+        - name: match_id
+          in: path
+          description: ID of the match
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Successful operation
+        '400':
+          description: Bad request
+  /api/events/matches/{match_id}/fouls/:
+    get:
+      summary: Foul Events by Match
+      description: Get a list of foul events for a specific match.
+      parameters:
+        - name: match_id
+          in: path
+          description: ID of the match
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Successful operation
+        '400':
+          description: Bad request
+  /api/events/matches/{match_id}/free_kicks/:
+    get:
+      summary: Free Kick Events by Match
+      description: Get a list of free kick events for a specific match.
+      parameters:
+        - name: match_id
+          in: path
+          description: ID of the match
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Successful operation
+        '400':
+          description: Bad request
+  /api/events/matches/{match_id}/topScorers/:
+    get:
+      summary: Top Scorers by Match
+      description: Get a list of top scorers for a specific match.
+      parameters:
+        - name: match_id
+          in: path
+          description: ID of the match
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Successful operation
+        '400':
+          description: Bad request
+  /api/events/matches/{match_id}/topAssistants/:
+    get:
+      summary: Top Assistants by Match
+      description: Get a list of top assistants for a specific match.
+      parameters:
+        - name: match_id
+          in: path
+          description: ID of the match
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Successful operation
+        '400':
+          description: Bad request
+  /api/events/matches/{match_id}/topFouls/:
+    get:
+      summary: Top Fouls by Match
+      description: Get a list of top fouls for a specific match.
+      parameters:
+        - name: match_id
+          in: path
+          description: ID of the match
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Successful operation
+        '400':
+          description: Bad request
+  /api/events/matches/{match_id}/topPasses/:
+    get:
+      summary: Top Passes by Match
+      description: Get a list of top passes for a specific match.
+      parameters:
+        - name: match_id
+          in: path
+          description: ID of the match
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Successful operation
+        '400':
+          description: Bad request
+  /api/events/matches/{match_id}/foulsByMinute/:
+    get:
+      summary: Fouls by Minute by Match
+      description: Get the distribution of fouls by minute for a specific match.
+      parameters:
+        - name: match_id
+          in: path
+          description: ID of the match
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Successful operation
+        '400':
+          description: Bad request
+  /api/events/matches/{match_id}/goalsByMinute/:
+    get:
+      summary: Goals by Minute by Match
+      description: Get the distribution of goals by minute for a specific match.
+      parameters:
+        - name: match_id
+          in: path
+          description: ID of the match
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Successful operation
+        '400':
+          description: Bad request
+  /api/events/matches/{match_id}/passesByMinute/:
+    get:
+      summary: Passes by Minute by Match
+      description: Get the distribution of passes by minute for a specific match.
+      parameters:
+        - name: match_id
+          in: path
+          description: ID of the match
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Successful operation
+        '400':
+          description: Bad request
+  /api/events/matches/{match_id}/divergentChart/:
+    get:
+      summary: Diverging Chart by Match
+      description: Get the diverging chart data for a specific match.
+      parameters:
+        - name: match_id
+          in: path
+          description: ID of the match
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Successful operation
+        '400':
+          description: Bad request
+  /api/players/:
+    get:
+      summary: Player List
+      description: Get a list of players.
+      responses:
+        '200':
+          description: Successful operation
+        '400':
+          description: Bad request
+  /api/events/players/{player_id}/goals/:
+    get:
+      summary: Goal Events by Player
+      description: Get a list of goal events for a specific player.
+      parameters:
+        - name: player_id
+          in: path
+          description: ID of the player
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Successful operation
+        '400':
+          description: Bad request
+  /api/events/players/{player_id}/fouls/:
+    get:
+      summary: Foul Events by Player
+      description: Get a list of foul events for a specific player.
+      parameters:
+        - name: player_id
+          in: path
+          description: ID of the player
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Successful operation
+        '400':
+          description: Bad request
+  /api/events/players/{player_id}/assitant/:
+    get:
+      summary: Assist Events by Player
+      description: Get a list of assist events for a specific player.
+      parameters:
+        - name: player_id
+          in: path
+          description: ID of the player
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Successful operation
+        '400':
+          description: Bad request
+  /api/events/players/{player_id}/free_kicks/:
+    get:
+      summary: Free Kick Events by Player
+      description: Get a list of free kick events for a specific player.
+      parameters:
+        - name: player_id
+          in: path
+          description: ID of the player
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Successful operation
+        '400':
+          description: Bad request
+  /api/events/players/{player_id}/radar/:
+    get:
+      summary: Player Radar Chart
+      description: Get the radar chart data for a specific player.
+      parameters:
+        - name: player_id
+          in: path
+          description: ID of the player
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Successful operation
+        '400':
+          description: Bad request
+  /api/events/players/{player_id}/events_count/:
+    get:
+      summary: Player Events Count
+      description: Get the count of events for a specific player.
+      parameters:
+        - name: player_id
+          in: path
+          description: ID of the player
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Successful operation
+        '400':
+          description: Bad request
+  /api/events/players/{player_id}/events_by_match/:
+    get:
+      summary: Player Events by Match
+      description: Get the events by match for a specific player.
+      parameters:
+        - name: player_id
+          in: path
+          description: ID of the player
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Successful operation
+        '400':
+          description: Bad request
+
+
+
+
+
+
