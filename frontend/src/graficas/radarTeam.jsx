@@ -1,32 +1,12 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, {useEffect, useRef } from 'react';
 import Chart from 'chart.js/auto';
-import { useParams } from "react-router-dom";
-import axios from 'axios';
 
-function RadarChart({wyId}) {
-    const [data, setData] = useState({
-      goles: 0,
-      pases: 0,
-      tiros: 0,
-      faltas: 0,
-      intercepciones: 0
-    });
-  
-    const { id } = useParams();
-
-    const param = wyId ? wyId : id;
+function RadarChart({data}) {
 
     const chartRef = useRef();
     const chartInstance = useRef(); // Definir la variable chartInstance aquí
   
-    useEffect(() => {
-        axios.get(`http://localhost:8000/api/events/teams/${param}/radar/`)
-          .then(response => setData(response.data))
-          .catch(error => console.log(error));
-      }, [id]);
-
     
-    console.log(data);
   
     useEffect(() => {
       if (chartRef.current) {
@@ -88,7 +68,7 @@ function RadarChart({wyId}) {
     }, [data]);
   
     return (
-      <div>
+      <div class = "radar">
         <canvas id="radar-chart" ref={chartRef}></canvas>
       </div>
     );

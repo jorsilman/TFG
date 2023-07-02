@@ -1,9 +1,10 @@
 from django.test import TestCase
 from django.urls import reverse
 from rest_framework import status
-
+from django.test import TransactionTestCase
 from .models import Teams
 from .serializers import TeamsSerializer
+
 
 
 class TopGoleadoresTeamTestCase(TestCase):
@@ -23,7 +24,7 @@ class TopGoleadoresTeamTestCase(TestCase):
             self.assertIn("apellido", item)
             self.assertIn("goles", item)
 
-# class CoeficienteAtaqueTeamTestCase(TestCase):
+# class CoeficienteAtaqueTeamTestCase(ProductionDatabaseTestCase):
 #     def test_coeficiente_ataque(self):
 #         team_id = 684  # ID del equipo de prueba
 #         url = f'/api/events/teams/{team_id}/attack/'
@@ -258,7 +259,7 @@ class RadarPlayerTestCase(TestCase):
         self.assertIn("pases", data)
         self.assertIn("tiros", data)
         self.assertIn("intercepciones", data)
-        self.assertIn("asitencias", data)
+        self.assertIn("asistencias", data)
 
 class EventCountPlayerTestCase(TestCase):
     def test_event_count_player(self):

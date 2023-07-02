@@ -172,3 +172,37 @@ export function EventosPorPartidoJugador({data}) {
 
   return <Bar data={chartData} options={chartOptions} />;
 }
+
+export function Resultados({data}) {
+  
+  if (!data) {
+    return <div>Loading...</div>;
+  }
+
+  const chartData = {
+    labels: Object.keys(data),
+    datasets: [
+      {
+        label: "Resultados",
+        data: Object.values(data),
+        backgroundColor: "rgba(54, 162, 235, 0.2)",
+        borderColor: "rgba(54, 162, 235, 1)",
+        borderWidth: 1,
+      },
+    ],
+  };
+
+  const chartOptions = {
+    scales: {
+      yAxes: [
+        {
+          ticks: {
+            beginAtZero: true,
+          },
+        },
+      ],
+    },
+  };
+
+  return <Bar data={chartData} options={chartOptions} />;
+}

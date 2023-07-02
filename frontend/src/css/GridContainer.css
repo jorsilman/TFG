@@ -4,6 +4,7 @@
   height: 100vh;
   overflow: hidden;
   position: relative;
+  padding-top: 40px;
 }
 
 .grid-layout {
@@ -62,49 +63,53 @@ nav button {
   display: flex;
   justify-content: center;
   align-items: center;
-  
+  overflow: auto;
 }
 
-.selection-container {
-  position: absolute;
-  top: 50px;
-  left: 0;
-  right: 0;
-  display: flex;
+
+.seleccion{
+  flex-grow: 0.2;
+  display: block;
   justify-content: center;
   align-items: center;
+  position: relative;
+  min-height: 0;
 }
 
-.selection-container select {
-  margin: 0 10px;
-  font-size: 16px;
+.radar{
+  transform: scale(0.8);
+  transform-origin:center;
+  justify-content: center;
+  align-items: center;
+  padding: 0px;
+}
+
+
+.label{
+  text-align: center;
+  font-size: 18px;
   font-weight: bold;
-  background-color: #fff;
-  border: none;
-  cursor: pointer;
 }
 
-.seleccion-grafica {
-  display: flex;
-  flex-direction: column;
-  height: 100%;
-  width: 100%;
+.nombre{
+  margin: 0 10px;
+  font-size: 22px;
+  font-weight: bold;
+  position: absolute;
+  right: 0;
+  margin-right: 10px;
 }
 
-.grafica-container {
+.input-config{
+  margin-left: 10px;
+  margin: 0 10px;
+  left: 0;
+  position: absolute;
   display: flex;
+  margin-top: auto;
   align-items: center;
-  justify-content: center;
-  flex-grow: 1;
 }
 
-.grafica {
-  width: 100%;
-  height: 100%;
+.lista-configs{
+  overflow: auto;
 }
-
-.selec-char {
- padding: 0%;
-}
-
-

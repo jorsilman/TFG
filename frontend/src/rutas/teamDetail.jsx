@@ -1,15 +1,11 @@
-import React, { useState } from 'react';
-
+import React, { useState, useEffect } from 'react';
 import { useParams } from "react-router-dom";
-import axios from 'axios';
-import { Form, Button, Container, Row, Col } from "react-bootstrap";
+import Footer from '../components/footer';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import '../css/GridContainer.css';
 import Menu from '../components/menu';
-import Footer from '../components/footer';
-import CoeficienteAtaqueEquipo from '../graficas/coeficientes';
-import RadarChart from '../graficas/radarTeam';
-import { PosicionesGoles, PosicionesAsistencias, PosicionesFaltas, PosicionesTirosLibres, GolesPorMinuto, FaltasPorMinuto, SankeyTeam, TopGoleadores, TopAsistencias, DivergingChart} from '../rutas/equipo';
+import { PosicionesGoles, PosicionesAsistencias, PosicionesFaltas, PosicionesTirosLibres, GolesPorMinuto, FaltasPorMinuto, SankeyTeam, TopGoleadores, TopAsistencias, DivergingChart, RadarChartTeam, Coeficiente, ResultadosTeam} from './team';
+import ApiService from '../ApiService';
 
 function EquipoDetalleP() {
   const [graficaConfig, setGraficaConfig] = useState([]);
@@ -24,9 +20,7 @@ function EquipoDetalleP() {
 
   const { id } = useParams();
 
-  const handleGuardarConfiguracion =  () => {
-    
-
+  const handleGuardarConfiguracion = async () => {
 
     const formData = new FormData();
     formData.append('nombre', nombre);
@@ -36,10 +30,14 @@ function EquipoDetalleP() {
 
     formData.append('graficas_seleccionadas', JSON.stringify(graficaConfig));
 
-    console.log(graficaConfig);
+    if(nombre === ''){
+      window.alert('Debe ingresar un nombre para guardar la configuración');
+      return;
+    }
+    
     try {
-      const response = axios.post('http://localhost:8000/configuraciones/', formData);
-      return response.data;
+      const response = await ApiService.guardarConfiguracion(formData);
+      window.alert('Configuración guardada con éxito');
     } catch (error) {
       console.error('Error al guardar la configuración:', error);
     }
@@ -60,12 +58,16 @@ function EquipoDetalleP() {
       <Menu />
       <div className="grid-container">
         <nav>
+          <div className="mb-3 input-config">
+            <label htmlFor="nombre" className="form-label mt-3">Nombre:</label>
+            <input type="text" id="nombre" className="form-control mt-3" value={nombre} onChange={handleNombreChange} />
+            <button className="btn btn-primary mt-3" onClick={handleGuardarConfiguracion}>Guardar</button>
+          </div>
           <button onClick={() => handleColumnChange(3)}>3</button>
           <button onClick={() => handleColumnChange(4)}>4</button>
           <button onClick={() => handleColumnChange(6)}>6</button>
+          <NombreEquipo />
         </nav>
-        <br />
-        <br />
         <div className={`grid-layout columns-${numColumns}`}>
           {Array.from({ length: numColumns }).map((_, index) => (
             <div key={index} className="grid-item">
@@ -79,12 +81,6 @@ function EquipoDetalleP() {
           ))}
         </div>
       </div>
-      <div className="mb-3">
-          <label htmlFor="nombre" className="form-label">Nombre:</label>
-          <input type="text" id="nombre" className="form-control" value={nombre} onChange={handleNombreChange} />
-          <button className="btn btn-primary mt-3" onClick={handleGuardarConfiguracion}>Guardar</button>
-      </div>
-      {/* <Footer /> */}
     </div>
   );
 }
@@ -95,9 +91,8 @@ function SeleccionGrafica({ graficaSeleccionada, onGraficaSeleccionada }) {
   };
 
   return (
-    <div className="selec-char">
-      <div className="nav-container">
-        <select value={graficaSeleccionada} onChange={handleChange}>
+    <div className="seleccion">
+        <select className="form-select custom-class" value={graficaSeleccionada} onChange={handleChange}>
           <option value="">Selecciona una gráfica</option>
           <option value="grafica1">Posiciones Goles</option>
           <option value="grafica2">Coeficiente de ataque</option>
@@ -108,27 +103,49 @@ function SeleccionGrafica({ graficaSeleccionada, onGraficaSeleccionada }) {
           <option value="grafica7">Top Goleadores</option>
           <option value="grafica8">Goles por minuto</option>
           <option value="grafica9">Faltas por minuto</option>
-          <option value="grafica10">Sankey</option>
+          <option value="grafica10">Evolución goles</option>
           <option value="grafica11">Top Asistencias</option>
           <option value="grafica12">Ataque-Defensa</option>
+          <option value="grafica13">Resultados</option>
         </select>
-      </div>
-      <br />
-      <div className="seleccion-grafica">
-      {graficaSeleccionada === "grafica1" && <div class="grafica-container"><PosicionesGoles /></div>}
-      {graficaSeleccionada === "grafica2" && <div class="grafica-container"><CoeficienteAtaqueEquipo /></div>}
-      {graficaSeleccionada === "grafica3" && <div class="grafica-container"><RadarChart /></div>}
-      {graficaSeleccionada === "grafica4" && <div class="grafica-container"><PosicionesAsistencias /></div>}
-      {graficaSeleccionada === "grafica5" && <div class="grafica-container"><PosicionesFaltas /></div>}
-      {graficaSeleccionada === "grafica6" && <div class="grafica-container"><PosicionesTirosLibres /></div>}
-      {graficaSeleccionada === "grafica7" && <div class="grafica-container"><TopGoleadores /></div>}
-      {graficaSeleccionada === "grafica8" && <div class="grafica-container"><GolesPorMinuto /></div>}
-      {graficaSeleccionada === "grafica9" && <div class="grafica-container"><FaltasPorMinuto /></div>}
-      {graficaSeleccionada === "grafica10" && <div class="grafica-container"><SankeyTeam /></div>}
-      {graficaSeleccionada === "grafica11" && <div class="grafica-container"><TopAsistencias /></div>}
-      {graficaSeleccionada === "grafica12" && <div class="grafica-container"><DivergingChart /></div>}
-      </div>
+        {graficaSeleccionada === "grafica1" && <PosicionesGoles />}
+        {graficaSeleccionada === "grafica2" && <Coeficiente />}
+        {graficaSeleccionada === "grafica3" && <RadarChartTeam />}
+        {graficaSeleccionada === "grafica4" && <PosicionesAsistencias />}
+        {graficaSeleccionada === "grafica5" && <PosicionesFaltas />}
+        {graficaSeleccionada === "grafica6" &&<PosicionesTirosLibres />}
+        {graficaSeleccionada === "grafica7" && <TopGoleadores />}
+        {graficaSeleccionada === "grafica8" && <GolesPorMinuto />}
+        {graficaSeleccionada === "grafica9" && <FaltasPorMinuto />}
+        {graficaSeleccionada === "grafica10" && <SankeyTeam />}
+        {graficaSeleccionada === "grafica11" && <TopAsistencias />}
+        {graficaSeleccionada === "grafica12" && <DivergingChart />}
+        {graficaSeleccionada === "grafica13" && <ResultadosTeam />}
     </div>
+  );
+}
+
+function NombreEquipo(){
+  const { id } = useParams();
+  const [data, setData] = useState('');
+
+
+  useEffect(() => {
+    async function fetchData() {
+    try {
+        const response = await ApiService.getTeam(id);
+        setData(response);
+    } catch (error) {
+        console.log(error);
+        console.log('Error al obtener los datos');
+    }
+    }
+
+    fetchData();
+  }, [id]);
+  const nombre = data.officialName;
+  return (
+    <p class = "nombre">{nombre}</p>
   );
 }
 

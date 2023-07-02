@@ -3,8 +3,8 @@ import { useParams } from "react-router-dom";
 import axios from "axios";
 import PosicionesEventos from "../graficas/posicionesEventos";
 import { EventosJugador, EventosPorPartidoJugador } from "../graficas/topGoleadores";
-
-
+import RadarChartPlayer from "../graficas/radarPlayer";
+import ApiService from "../ApiService";
 
 export function PosicionesGolesPlayer({wyId}) {
     const [events, setEvents] = useState([]);
@@ -14,14 +14,18 @@ export function PosicionesGolesPlayer({wyId}) {
     const param = wyId ? wyId : id;
 
     useEffect(() => {
-        axios.get('http://localhost:8000/api/events/players/' + param + '/goals/')
-        .then(response => {
-            setEvents(response.data);
-        })
-        .catch(error => {
+        async function fetchGoalsData() {
+        try {
+            const response = await ApiService.getGoalEventsPlayers(param);
+            setEvents(response);
+        } catch (error) {
             console.log(error);
-        });
-    }, [id]);
+        }
+        }
+
+        fetchGoalsData();
+    }, [param]);
+
 
     return (
         <div>
@@ -39,14 +43,18 @@ export function PosicionesAsistenciasPlayer({wyId}) {
     const param = wyId ? wyId : id;
 
     useEffect(() => {
-        axios.get('http://localhost:8000/api/events/players/' + param + '/assitant/')
-        .then(response => {
-            setEvents(response.data);
-        })
-        .catch(error => {
+        async function fetchAssistsData() {
+        try {
+            const response = await ApiService.getAssistEventsPlayers(param);
+            setEvents(response);
+        } catch (error) {
             console.log(error);
-        });
-    }, [id]);
+        }
+        }
+
+        fetchAssistsData();
+    }, [param]);
+
 
     return (
         <div>
@@ -64,14 +72,17 @@ export function PosicionesFaltasPlayer({wyId}) {
     const param = wyId ? wyId : id;
 
     useEffect(() => {
-        axios.get('http://localhost:8000/api/events/players/' + param + '/fouls/')
-        .then(response => {
-            setEvents(response.data);
-        })
-        .catch(error => {
+        async function fetchData() {
+        try {
+            const response = await ApiService.getFoulEventsPlayers(param);
+            setEvents(response);
+        } catch (error) {
             console.log(error);
-        });
-    }, [id]);
+        }
+        }
+
+        fetchData();
+    }, [param]);
 
     return (
         <div>
@@ -89,14 +100,17 @@ export function PosicionesTirosLibresPlayer({wyId}) {
     const param = wyId ? wyId : id;
 
     useEffect(() => {
-        axios.get('http://localhost:8000/api/events/players/' + param + '/free_kicks/')
-        .then(response => {
-            setEvents(response.data);
-        })
-        .catch(error => {
+        async function fetchData() {
+        try {
+            const response = await ApiService.getFreeKicksEventsPlayers(param);
+            setEvents(response);
+        } catch (error) {
             console.log(error);
-        });
-    }, [id]);
+        }
+        }
+
+        fetchData();
+    }, [param]);
 
     return (
         <div>
@@ -114,14 +128,17 @@ export function EventosPlayer({wyId}){
     const param = wyId ? wyId : id;
 
     useEffect(() => {
-        axios.get('http://localhost:8000/api/events/players/' + param + '/events_count/')
-        .then(response => {
-            setEvents(response.data);
-        })
-        .catch(error => {
+        async function fetchData() {
+        try {
+            const response = await ApiService.getEventosPlayer(param);
+            setEvents(response);
+        } catch (error) {
             console.log(error);
-        });
-    }, [id]);
+        }
+        }
+
+        fetchData();
+    }, [param]);
 
     return (
         <div>
@@ -139,14 +156,17 @@ export function EventosPorPartidoPlayer({wyId}){
     const param = wyId ? wyId : id;
 
     useEffect(() => {
-        axios.get('http://localhost:8000/api/events/players/' + param + '/events_by_match/')
-        .then(response => {
-            setEvents(response.data);
-        })
-        .catch(error => {
+        async function fetchData() {
+        try {
+            const response = await ApiService.getEventosPorPartidoPlayer(param);
+            setEvents(response);
+        } catch (error) {
             console.log(error);
-        });
-    }, [id]);
+        }
+        }
+
+        fetchData();
+    }, [param]);
 
     return (
         <div>
@@ -154,4 +174,35 @@ export function EventosPorPartidoPlayer({wyId}){
         </div>
     );
 
+}
+
+export function RadarChart({wyId}){
+    const [data, setData] = useState(null);
+
+    const { id } = useParams();
+
+    const param = wyId ? wyId : id;
+
+    useEffect(() => {
+        async function fetchRadarData() {
+        try {
+            const response = await ApiService.getRadarPlayerData(param);
+            setData(response);
+        } catch (error) {
+            console.log(error);
+        }
+        }
+
+        fetchRadarData();
+    }, [param]);
+
+    return (
+        <div>
+            {data ? (
+                <RadarChartPlayer data={data} />
+            ) : (
+                <p>Cargando...</p>
+            )}
+        </div>
+    );
 }

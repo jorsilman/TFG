@@ -8,7 +8,7 @@ import axios from "axios";
 export default function DivergingChartTeam({data}) {
     
     const options = {
-        title: "Ataque-Defensa",
+        title: " ",
         curveType: "function",
         legend: { position: "bottom" },
       };

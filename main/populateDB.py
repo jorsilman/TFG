@@ -75,8 +75,7 @@ def populatePlayers():
                              currentTeamId=team, 
                              wyId=int(item['wyId']), 
                              foot=item['foot'], 
-                             shortName=item['shortName'], 
-                             currentNationalTeamId=nTeam)
+                             shortName=item['shortName'])
             lista.append(player)
     Players.objects.bulk_create(lista)
 

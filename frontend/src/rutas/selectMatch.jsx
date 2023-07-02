@@ -2,32 +2,31 @@ import {Link} from 'react-router-dom';
 import Menu from '../components/menu';
 import Footer from '../components/footer';
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
-import 'bootstrap/dist/css/bootstrap.min.css';
-import Select from 'react-select';
 import ApiService from '../ApiService';
+import Select from 'react-select';
+import 'bootstrap/dist/css/bootstrap.min.css';
 
-function SelectPlayer(){
+function SelectMatch(){
   return (
     <div>
       <Menu />
 
-      <Players />
+      <Matches />
 
       <Footer />
     </div>
   )
 }
 
-function Players() {
-  const [players, setPlayers] = useState([]);
+function Matches() {
+  const [matches, setMatches] = useState([]);
   const [selected, setSelected] = useState(null);
 
   useEffect(() => {
     async function fetchData() {
     try {
-        const response = await ApiService.getPlayers();
-        setPlayers(response);
+        const response = await ApiService.getMatches();
+        setMatches(response);
     } catch (error) {
         console.log(error);
     }
@@ -44,17 +43,17 @@ function Players() {
     <div className="container">
       <div className="row">
         <div className="col-md-6 offset-md-3 text-center">
-          <h2>Selecciona un jugador</h2>
+          <h2>Selecciona un partido</h2>
           <Select
-            options={players.map(player => ({
-              value: player.wyId,
-              label: `${player.firstName} ${player.lastName}`
+            options={matches.map(match => ({
+              value: match.wyId,
+              label: `${match.label}`
             }))}
-            placeholder="Selecciona un jugador"
+            placeholder="Selecciona un partido"
             onChange={handleSelectMatch}
             value={selected}
           />
-          <Link to={`/players/${selected ? selected.value : ''}`}>
+          <Link to={`/matches/${selected ? selected.value : ''}`}>
             <button className="btn btn-primary">Aceptar</button>
           </Link>
         </div>
@@ -63,4 +62,4 @@ function Players() {
   );
 }
 
-export default SelectPlayer;
+export default SelectMatch;

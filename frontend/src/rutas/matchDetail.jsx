@@ -1,14 +1,10 @@
-import React, { useState } from 'react';
-
+import React, { useState, useEffect } from 'react';
 import { useParams } from "react-router-dom";
-import axios from 'axios';
-import { Form, Button, Container, Row, Col } from "react-bootstrap";
+import Footer from '../components/footer';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import Menu from '../components/menu';
-import Footer from '../components/footer';
-import CoeficienteAtaqueEquipo from '../graficas/coeficientes';
-import RadarChart from '../graficas/radarTeam';
 import { PosicionesAsistenciasMatch, DivergingChartMatch, FaltasPorMinutoMatch, GolesPorMinutoMatch, PosicionesFaltasMatch, PosicionesGolesMatch, PosicionesTirosLibresMatch, TopAsistenciasMatch, TopGoleadoresMatch } from './match';
+import ApiService from '../ApiService';
 
 function PartidoDetalle() {
   const [graficaConfig, setGraficaConfig] = useState([]);
@@ -23,9 +19,7 @@ function PartidoDetalle() {
 
   const { id } = useParams();
 
-  const handleGuardarConfiguracion =  () => {
-    
-
+  const handleGuardarConfiguracion = async () => {
 
     const formData = new FormData();
     formData.append('nombre', nombre);
@@ -35,10 +29,13 @@ function PartidoDetalle() {
 
     formData.append('graficas_seleccionadas', JSON.stringify(graficaConfig));
 
-    console.log(graficaConfig);
+    if(nombre === ''){
+      window.alert('Debe ingresar un nombre para guardar la configuración');
+      return;
+    }
     try {
-      const response = axios.post('http://localhost:8000/configuraciones/', formData);
-      return response.data;
+      const response = await ApiService.guardarConfiguracion(formData);
+      window.alert('Configuración guardada con éxito');
     } catch (error) {
       console.error('Error al guardar la configuración:', error);
     }
@@ -59,9 +56,15 @@ function PartidoDetalle() {
       <Menu />
       <div className="grid-container">
         <nav>
+          <div className="mb-3 input-config">
+            <label htmlFor="nombre" className="form-label mt-3">Nombre:   </label>
+            <input type="text" id="nombre" className="form-control mt-3" value={nombre} onChange={handleNombreChange} />
+            <button className="btn btn-primary mt-3" onClick={handleGuardarConfiguracion}>Guardar</button>
+          </div>
           <button onClick={() => handleColumnChange(3)}>3</button>
           <button onClick={() => handleColumnChange(4)}>4</button>
-          <button onClick={() => handleColumnChange(6)}>6</button> 
+          <button onClick={() => handleColumnChange(6)}>6</button>
+          <Nombre /> 
         </nav>
         <div className={`grid-layout columns-${numColumns}`}>
           {Array.from({ length: numColumns }).map((_, index) => (
@@ -76,14 +79,6 @@ function PartidoDetalle() {
           ))}
         </div>
       </div>
-      <div className="mb-3">
-          <label htmlFor="nombre" className="form-label">Nombre:</label>
-          <input type="text" id="nombre" className="form-control" value={nombre} onChange={handleNombreChange} />
-          <button className="btn btn-primary mt-3" onClick={handleGuardarConfiguracion}>Guardar</button>
-      </div>
-      
-      
-      {/* <Footer /> */}
     </div>
   );
 }
@@ -94,12 +89,11 @@ function SeleccionGrafica({ graficaSeleccionada, onGraficaSeleccionada }) {
   };
 
   return (
-    <div>
-      <div className="nav-container">
-        <select value={graficaSeleccionada} onChange={handleChange}>
+    <div class="seleccion">
+        <select className="form-select custom-class" value={graficaSeleccionada} onChange={handleChange}>
           <option value="">Selecciona una gráfica</option>
           <option value="grafica1">Posiciones Goles</option>
-          <option value="grafica2">Diverging Chart</option>
+          <option value="grafica2">Local - Visitante</option>
           <option value="grafica3">Faltas por minuto</option>
           <option value="grafica4">Goles por minuto</option>
           <option value="grafica5">Posiciones Asistencias</option>
@@ -108,18 +102,41 @@ function SeleccionGrafica({ graficaSeleccionada, onGraficaSeleccionada }) {
           <option value="grafica8">Top Asistencias</option>
           <option value="grafica9">Top Goleadores</option>
         </select>
-      </div>
-      {graficaSeleccionada === "grafica1" && <PosicionesGolesMatch />}
-      {graficaSeleccionada === "grafica2" && <DivergingChartMatch />}
-      {graficaSeleccionada === "grafica3" && <FaltasPorMinutoMatch />}
-      {graficaSeleccionada === "grafica4" && <GolesPorMinutoMatch />}
-      {graficaSeleccionada === "grafica5" && <PosicionesAsistenciasMatch />}
-      {graficaSeleccionada === "grafica6" && <PosicionesFaltasMatch />}
-      {graficaSeleccionada === "grafica7" && <PosicionesTirosLibresMatch />}
-      {graficaSeleccionada === "grafica8" && <TopAsistenciasMatch />}
-      {graficaSeleccionada === "grafica9" && <TopGoleadoresMatch />}
+        {graficaSeleccionada === "grafica1" && <PosicionesGolesMatch />}
+        {graficaSeleccionada === "grafica2" && <DivergingChartMatch />}
+        {graficaSeleccionada === "grafica3" && <FaltasPorMinutoMatch />}
+        {graficaSeleccionada === "grafica4" && <GolesPorMinutoMatch />}
+        {graficaSeleccionada === "grafica5" && <PosicionesAsistenciasMatch />}
+        {graficaSeleccionada === "grafica6" && <PosicionesFaltasMatch />}
+        {graficaSeleccionada === "grafica7" && <PosicionesTirosLibresMatch />}
+        {graficaSeleccionada === "grafica8" && <TopAsistenciasMatch />}
+        {graficaSeleccionada === "grafica9" && <TopGoleadoresMatch />}
 
     </div>
+  );
+}
+
+function Nombre(){
+  const { id } = useParams();
+  const [data, setData] = useState('');
+
+
+  useEffect(() => {
+    async function fetchData() {
+    try {
+        const response = await ApiService.getMatch(id);
+        setData(response);
+    } catch (error) {
+        console.log(error);
+        console.log('Error al obtener los datos');
+    }
+    }
+
+    fetchData();
+  }, [id]);
+  const nombre = data.label;
+  return (
+    <p class = "nombre">{nombre}</p>
   );
 }
 

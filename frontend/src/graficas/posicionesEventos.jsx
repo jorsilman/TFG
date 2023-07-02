@@ -1,13 +1,12 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Chart } from 'chart.js';
 import axios from 'axios';
-import backgroundImage from  '../media/fut.jpg';
 import { useParams } from 'react-router-dom';
 
 function PosicionesEventos({events}) {
   const chartRef = useRef();
   const image = new Image();
-  image.src = 'https://i.pinimg.com/564x/6a/05/76/6a05763dddb861f4858d5ac63d4b058f.jpg'; 
+  image.src = "/fut.jpg";
   useEffect(() => {
     if (events.length > 0) {
       const chartData = {
@@ -80,9 +79,9 @@ function PosicionesEventos({events}) {
   }
 
   return (
-    <div>
+    
       <canvas ref={chartRef} />
-    </div>
+    
   );
 }
 

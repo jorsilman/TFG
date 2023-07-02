@@ -19,6 +19,12 @@ RUN pip install --no-cache-dir -r Centro_De_Mandos_Configurable/requirements.txt
 # Puerto en el que se ejecutará el servidor de Django
 EXPOSE 8000
 
+# Descargar wait-for-it.sh
+ADD https://raw.githubusercontent.com/vishnubob/wait-for-it/master/wait-for-it.sh /wait-for-it.sh
+RUN chmod +x /wait-for-it.sh
+
 # Comando para ejecutar Django
-CMD python manage.py runserver 0.0.0.0:8000
+CMD /wait-for-it.sh db:3306 -t 240 -- python manage.py runserver 0.0.0.0:8000
+
+
 

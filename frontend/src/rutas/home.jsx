@@ -9,7 +9,7 @@ export default function Home(){
         <Menu />
         <body>
             <div class="container">
-                <h1 class="text-center mt-5 hover-effect">Centro de Mandos Configurable</h1>
+                <h1 class="text-center mt-5 hover-effect">Cuadro de Mandos Configurable</h1>
                 <p class="lead text-center hover-effect">Datos de Futbol Liga Española</p>
                 <img src={imagen} alt="Universidad de Sevilla" style={{ display: 'block', margin: 'auto' }}/>
                 

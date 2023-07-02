@@ -4,15 +4,16 @@ import reportWebVitals from './reportWebVitals';
 import {createBrowserRouter, RouterProvider} from 'react-router-dom';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import Home from './rutas/home';
-import PagEquiposFirst from './rutas/teams';
-import SelectMatch from './rutas/seleccionPartido';
+import PagEquiposFirst from './rutas/selectTeam';
+import SelectMatch from './rutas/selectMatch';
 import SelectPlayer from './rutas/selectPlayer';
 import PartidoDetalle from './rutas/matchDetail';
 import PlayerDetail from './rutas/playerDetail';
-import Login from './components/login';
-import EquipoDetalleP from './rutas/equipoDetalle copy';
+import EquipoDetalleP from './rutas/teamDetail';
 import ListaConfiguraciones from './rutas/myConfigurations';
 import ConfigurationDetail from './rutas/configurationDetail';
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const router = createBrowserRouter([
   {
@@ -44,10 +45,6 @@ const router = createBrowserRouter([
     element: <PlayerDetail />,
   },
   {
-    path: '/login',
-    element: <Login />,
-  },
-  {
     path: '/configs',
     element: <ListaConfiguraciones />,
   },
@@ -63,6 +60,13 @@ root.render(
     
     <RouterProvider router={router }></RouterProvider>
   </React.StrictMode>
+);
+
+ReactDOM.render(
+  <React.StrictMode>
+    <ToastContainer position="top-right" autoClose={3000} />
+  </React.StrictMode>,
+  document.getElementById('root')
 );
 
 // If you want to start measuring performance in your app, pass a function

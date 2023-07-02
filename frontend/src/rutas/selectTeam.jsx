@@ -2,8 +2,7 @@ import {Link} from 'react-router-dom';
 import Menu from '../components/menu';
 import Footer from '../components/footer';
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
-import { Form, Button, Container, Row, Col } from "react-bootstrap";
+import ApiService from '../ApiService';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 function PagEquiposFirst(){
@@ -18,19 +17,22 @@ function PagEquiposFirst(){
   )
 }
 
-function Equipos() {
+export function Equipos() {
     const [teams, setTeams] = useState([]);
     const [selectedTeam, setSelectedTeam] = useState(null);
 
     useEffect(() => {
-      axios.get('http://localhost:8000/api/teams/')
-        .then(response => {
-          setTeams(response.data);
-        })
-        .catch(error => {
+      async function fetchData() {
+      try {
+          const response = await ApiService.getTeams();
+          setTeams(response);
+      } catch (error) {
           console.log(error);
-        });
-    }, []);
+      }
+      }
+  
+      fetchData();
+  }, []);
 
     function handleSelectTeam(event) {
       setSelectedTeam(event.target.value);
@@ -42,7 +44,7 @@ function Equipos() {
         <div className="col-md-6 offset-md-3 text-center">
           <h2>Selecciona un equipo</h2>
           <select className="form-select mb-3" onChange={handleSelectTeam}>
-            <option defaultValue>Selecciona un equipo</option>
+            <option defaultValue>Selecciona  equipo</option>
             {teams.map(team => (
               <option key={team.wyId} value={team.wyId}>{team.name}</option>
             ))}

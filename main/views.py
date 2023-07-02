@@ -21,44 +21,7 @@ from main import serializers
 from django.contrib.auth import login, authenticate
 from django.views import View
 
-# ======= LOGIN =======
-@csrf_exempt
-def login_view(request):
-    if request.method == 'POST':
-        username = request.POST.get('username')
-        password = request.POST.get('password')
 
-        if not username or not password:
-            return JsonResponse({'message': 'Por favor, ingresa nombre de usuario y contraseña'}, status=400)
-
-        user = authenticate(username=username, password=password)
-        if user is not None:
-            login(request, user)
-            return JsonResponse({'message': 'Inicio de sesión exitoso'})
-        else:
-            return JsonResponse({'message': 'Nombre de usuario o contraseña incorrectos'}, status=400)
-    else:
-        return JsonResponse({'message': 'Método no permitido'}, status=405)
-    
-@csrf_exempt
-def register(request):
-    if request.method == "POST":
-        username = request.POST.get('username')
-        password = request.POST.get('password')
-        nombre = request.POST.get('name')
-        if not username or not password or not nombre:
-            return JsonResponse({'message': 'Por favor, completa todos los campos'}, status=400)
-
-        try:
-            usuario = Usuario.objects.create_user(username=username, password=password)
-            usuario.nombre = nombre
-            usuario.save()
-            #login(request, usuario)
-            return JsonResponse({'message': 'Registro exitoso'})
-        except Exception as e:
-            return JsonResponse({'message': 'Error en el registro: {}'.format(str(e))}, status=400)
-    else:
-        return JsonResponse({'message': 'Método no permitido'}, status=405)
 
 # ======= CONFIGURACIÓN =======
 
@@ -87,7 +50,7 @@ def configuracion(request):
     else:
         return JsonResponse({'message': 'Método no permitido'}, status=405)
 
-
+ 
     
 @csrf_exempt
 def get_configuracion(request, id):
@@ -126,6 +89,15 @@ class TeamList(generics.ListAPIView):
     queryset = Teams.objects.all()
     serializer_class = TeamsSerializer
 
+@csrf_exempt
+def get_team(request, team_id):
+    team = Teams.objects.get(wyId=team_id)
+    officialName = team.officialName
+    data = {
+        'officialName': officialName
+    }
+    return JsonResponse(data)
+
 class EventsList(generics.ListAPIView):
     serializer_class = EventsSerializer
 
@@ -138,8 +110,8 @@ class GoalTeamEvents(generics.ListAPIView):
 
     def get_queryset(self):
         team_id = self.kwargs['team_id']
-        GoalTeamEvents = Events.objects.filter(Q(teamId=team_id) &(Q(eventName="Shot") | Q(eventName="Free Kick") ) & Q(tags__id=101))
-
+        GoalTeamEvents = Events.objects.filter(Q(teamId=team_id) & Q(tags__id=101) & ~Q(playerId__roleId__roleId=9))
+        
         return GoalTeamEvents
     
 class FoulTeamEvents(generics.ListAPIView):
@@ -170,9 +142,12 @@ class FreeKickTeamEvents(generics.ListAPIView):
 
 @csrf_exempt
 def topGoleadores(request, team_id):
-    events = Events.objects.filter(Q(teamId=team_id) & (Q(eventName="Shot") | Q(eventName="Free Kick") | Q(eventName="Pass")) & Q(tags__id=101))
+    # events = Events.objects.filter(Q(teamId=team_id) & (Q(eventName="Shot") | Q(eventName="Free Kick") | Q(eventName="Pass")) & Q(tags__id=101))
+    #eventos con tag 101 y que no tenga tag 102
+    events = Events.objects.filter(Q(teamId=team_id) & Q(tags__id=101) & ~Q(tags__id=102) & ~Q(playerId__roleId__roleId=9))
     goleadores = {}
     for event in events:
+        if event.playerId.roleId.roleId !=9:
             if event.playerId.wyId in goleadores:
                 goleadores[event.playerId.wyId] += 1
             else:
@@ -210,7 +185,7 @@ def topAsistentes(request, team_id):
 
 @csrf_exempt
 def golesPorMinuto(request, team_id):
-    events = Events.objects.filter(Q(teamId=team_id) & (Q(eventName="Shot") | Q(eventName="Free Kick") | Q(eventName="Pass")) & Q(tags__id=101))
+    events = Events.objects.filter(Q(teamId=team_id) & Q(tags__id=101) & ~Q(tags__id=102) & ~Q(playerId__roleId__roleId=9))
     minutos = {"0-10": 0, "10-20": 0, "20-30": 0, "30-40": 0, "40-50": 0, "50-60": 0, "60-70": 0, "70-80": 0, "80-90": 0}
     for event in events:
         if (event.matchPeriod == "1H" or event.matchPeriod == "2H" or event.matchPeriod == "E1" or event.matchPeriod == "E2"):
@@ -282,7 +257,7 @@ def faltasPorMinuto(request, team_id):
 
 @csrf_exempt
 def radarTeam(request, team_id):
-    goles = Events.objects.filter(Q(teamId=team_id) & (Q(eventName="Shot") | Q(eventName="Free Kick") | Q(eventName="Pass")) & Q(tags__id=101)).count()
+    goles = Events.objects.filter(Q(teamId=team_id) & Q(tags__id=101) & ~Q(tags__id=102) & ~Q(playerId__roleId__roleId=9)).count()
     pases = Events.objects.filter(Q(teamId=team_id) & Q(eventName="Pass")).count()
     tiros = Events.objects.filter(Q(teamId=team_id) & Q(eventName="Shot")).count()
     faltas = Events.objects.filter(Q(teamId=team_id) & Q(eventName="Foul")).count()
@@ -319,7 +294,7 @@ def barrasDivergentes(request, team_id):
 
 def calculaAtaqueEquipo(EventModel):
     puntuacion = 0
-    goles = EventModel.filter((Q(eventName="Shot") | Q(eventName="Free Kick") | Q(eventName="Pass")) & Q(tags__id=101)).count()
+    goles = Events.objects.filter(Q(tags__id=101) & ~Q(tags__id=102) & ~Q(playerId__roleId__roleId=9)).count()
     pasesX2 = EventModel.filter(Q(eventName="Pass") & (Q(tags__id=302) | Q(tags__id=301) | Q(tags__id=201))).count()
     pasesX2_tags = [302, 301, 201, 101]
     pasesX1 = EventModel.filter(eventName="Pass").exclude(tags__id__in=pasesX2_tags).count()
@@ -361,6 +336,28 @@ def calculaDefensaEquipo(EventModel):
 
     
     return puntuacion
+
+def resultadosEquipos(request, team_id):
+    matches = Events.objects.filter(teamId=team_id).values("matchId").distinct()
+    ganados = 0
+    empatados = 0
+    perdidos = 0
+    equipo = Teams.objects.get(wyId=team_id)
+    for match in matches:
+        partido = Matches.objects.get(wyId=match["matchId"])
+        print(partido.winnerId)
+        if partido.winnerId == equipo:
+            ganados += 1
+        elif partido.winnerId == None:
+            empatados += 1
+        else:
+            perdidos += 1
+    data = {
+        "ganados": ganados,
+        "empatados": empatados,
+        "perdidos": perdidos
+    }
+    return JsonResponse(data, safe=False)
     
 # Create your views here.
 def populateDatabase(request):
@@ -377,49 +374,34 @@ def index(request):
 def coeficienteAtaqueEquipo(request, team_id):
     events = Events.objects.filter(teamId=team_id)
     puntuacion = 0
-    for event in events:
-        tags = event.tags.all()
-        if event.eventName == "Pass":
-            for tag in tags:
-                if tag.tagId == 101:
-                    puntuacion += 3
-                elif tag.tagId == 302 or tag.tagId == 301 or tag.tagId == 201:
-                    puntuacion += 2
-        if event.eventName == "Shot":
-            for tag in tags:
-                if tag.tagId == 301 or tag.tagId == 201 or tag.tagId == 1801:
-                    puntuacion += 2
-                elif tag.tagId == 101:
-                    puntuacion += 3
-        if event.subEventName == "Penalty":
-            for tag in tags:
-                if tag.tagId == 101:
-                    puntuacion += 3
-                else:
-                    puntuacion += 2
-        if event.eventName == "Free Kick":
-            for tag in tags:
-                if tag.tagId == 101:
-                    puntuacion += 3
-                elif tag.tagId == 302 or tag.tagId == 301 or tag.tagId == 201:
-                    puntuacion += 2
-        if event.eventName == "Others on the ball":
-            for tag in tags:
-                if tag.tagId == 101:
-                    puntuacion += 3
-                if tag.tagId == 301 or tag.tagId == 201 or tag.tagId == 1901:
-                    puntuacion += 2
+    pases2 = events.filter(Q(eventName="Pass") & (Q(tags__id=302) | Q(tags__id=301) | Q(tags__id=201))).count()
+    pases3 = events.filter(Q(eventName="Pass") & (Q(tags__id=101))).count()
+    tiros3 = events.filter(Q(eventName="Shot") & (Q(tags__id=101))).count()
+    tiros2 = events.filter(Q(eventName="Shot") & (Q(tags__id=1801) | Q(tags__id=301) | Q(tags__id=201))).count()
+    penalties = events.filter(Q(subEventName="Penalty")).count()
+    faltas2 = events.filter(Q(eventName="Free Kick")& (Q(tags__id=302) | Q(tags__id=301) | Q(tags__id=201))).count()
+    faltas3 = events.filter(Q(eventName="Free Kick")& (Q(tags__id=101))).count()
     num_partidos = TeamsData.objects.filter(teamId=team_id).count()
+    puntuacion += pases2*2
+    puntuacion += pases3*3
+    puntuacion += tiros3*3
+    puntuacion += tiros2*2
+    puntuacion += penalties*3
+    puntuacion += faltas2*2
+    puntuacion += faltas3*3
+
     coeficiente = round(puntuacion / num_partidos, 2)
-    coeficiente_normalizado = coeficiente / 2  # Normalizar coeficiente entre 0 y 10
+    coeficiente_normalizado = round(coeficiente / 64.29, 2)
     return JsonResponse({'coeficiente': coeficiente_normalizado})
+
+
                     
 def sankey(request, team_id):
     partidos = TeamsData.objects.filter(teamId=team_id)
     partidos_matches = [partido.matchId for partido in partidos]
     diccionario = {}
     for partido in partidos_matches:
-        events = Events.objects.filter(Q(matchId=partido) & (Q(eventName="Shot") | Q(eventName="Free Kick") | Q(eventName="Pass")) & Q(tags__id=101))
+        events = Events.objects.filter(Q(matchId=partido) & Q(tags__id=101) & ~Q(tags__id=102) & ~Q(playerId__roleId__roleId=9))
         diccionario = evolucionGoles(events, diccionario, team_id)
     data = [["From", "To", "Weight"]]
     for key, value in diccionario.items():
@@ -482,13 +464,21 @@ class MatchList(generics.ListAPIView):
     queryset = Matches.objects.all()
     serializer_class = MatchesSerializer
 
+@csrf_exempt
+def get_match(request, match_id):
+    match = Matches.objects.get(wyId=match_id)
+    label = match.label
+    data = {
+        'label': label
+    }
+    return JsonResponse(data)
+
 class GoalMatchEvents(generics.ListAPIView):
     serializer_class = EventsSerializer
 
     def get_queryset(self):
         match_id = self.kwargs['match_id']
-        GoalMatchEvents = Events.objects.filter(Q(matchId=match_id) &(Q(eventName="Shot") | Q(eventName="Free Kick") | Q(eventName="Pass")) & Q(tags__id=101))
-
+        GoalMatchEvents = Events.objects.filter(Q(matchId=match_id) & Q(tags__id=101) & ~Q(tags__id=102) & ~Q(playerId__roleId__roleId=9))
         return GoalMatchEvents
 
 class FoulMatchEvents(generics.ListAPIView):
@@ -517,7 +507,7 @@ class FreeKickMatchEvents(generics.ListAPIView):
 
 @csrf_exempt
 def topGoleadoresPartido(request, match_id):
-    events = Events.objects.filter(Q(matchId=match_id) & (Q(eventName="Shot") | Q(eventName="Free Kick") | Q(eventName="Pass")) & Q(tags__id=101))
+    events = Events.objects.filter(Q(matchId=match_id) & Q(tags__id=101) & ~Q(tags__id=102) & ~Q(playerId__roleId__roleId=9))
     goleadores = {}
     for event in events:
             if event.playerId.wyId in goleadores:
@@ -613,12 +603,14 @@ def faltasPorMinutoPartido(request, match_id):
                     minutos["40-50"] += 1
             elif event.matchPeriod == "2H":
                 if min < 10:
-                    minutos["50-60"] += 1
+                    minutos["40-50"] += 1
                 elif min < 20:
-                    minutos["60-70"] += 1
+                    minutos["50-60"] += 1
                 elif min < 30:
-                    minutos["70-80"] += 1
+                    minutos["60-70"] += 1
                 elif min < 40:
+                    minutos["70-80"] += 1
+                elif min < 50:
                     minutos["80-90"] += 1
             elif event.matchPeriod == "E1":
                 minutos["40-50"] += 1
@@ -649,12 +641,14 @@ def pasesPorMinutoPartido(request, match_id):
                     minutos["40-50"] += 1
             elif event.matchPeriod == "2H":
                 if min < 10:
-                    minutos["50-60"] += 1
+                    minutos["40-50"] += 1
                 elif min < 20:
-                    minutos["60-70"] += 1
+                    minutos["50-60"] += 1
                 elif min < 30:
-                    minutos["70-80"] += 1
+                    minutos["60-70"] += 1
                 elif min < 40:
+                    minutos["70-80"] += 1
+                elif min < 50:
                     minutos["80-90"] += 1
             elif event.matchPeriod == "E1":
                 minutos["40-50"] += 1
@@ -666,7 +660,8 @@ def pasesPorMinutoPartido(request, match_id):
     return JsonResponse(data, safe=False)
 
 def golesPorMinutoPartido(request, match_id):
-    events = Events.objects.filter(Q(matchId=match_id) & (Q(eventName="Shot") | Q(eventName="Free Kick") | Q(eventName="Pass")) & Q(tags__id=101))
+    events = Events.objects.filter(Q(matchId=match_id) & Q(tags__id=101) & ~Q(tags__id=102) & ~Q(playerId__roleId__roleId=9))
+    print(events.__len__())
     minutos = {"0-10": 0, "10-20": 0, "20-30": 0, "30-40": 0, "40-50": 0, "50-60": 0, "60-70": 0, "70-80": 0, "80-90": 0}
     for event in events:
         if (event.matchPeriod == "1H" or event.matchPeriod == "2H" or event.matchPeriod == "E1" or event.matchPeriod == "E2"):
@@ -684,12 +679,14 @@ def golesPorMinutoPartido(request, match_id):
                     minutos["40-50"] += 1
             elif event.matchPeriod == "2H":
                 if min < 10:
-                    minutos["50-60"] += 1
+                    minutos["40-50"] += 1
                 elif min < 20:
-                    minutos["60-70"] += 1
+                    minutos["50-60"] += 1
                 elif min < 30:
-                    minutos["70-80"] += 1
+                    minutos["60-70"] += 1
                 elif min < 40:
+                    minutos["70-80"] += 1
+                elif min < 50:
                     minutos["80-90"] += 1
             elif event.matchPeriod == "E1":
                 minutos["40-50"] += 1
@@ -727,6 +724,19 @@ class PlayerList(generics.ListAPIView):
     queryset = Players.objects.all()
     serializer_class = PlayersSerializer
 
+@csrf_exempt
+def get_player(request, player_id):
+    player = Players.objects.get(wyId=player_id)
+    firstName = player.firstName
+    lastName = player.lastName
+    middleName = player.middleName
+    data = {
+        'firstName': firstName,
+        'lastName': lastName,
+        'middleName': middleName
+    }
+    return JsonResponse(data)
+
 class GoalPlayerEvents(generics.ListAPIView):
     serializer_class = EventsSerializer
 
@@ -762,7 +772,7 @@ class FreeKickPlayerEvents(generics.ListAPIView):
     
 @csrf_exempt
 def radarPlayer(request, player_id):
-    goles = Events.objects.filter(Q(playerId=player_id) & (Q(eventName="Shot") | Q(eventName="Free Kick") | Q(eventName="Pass")) & Q(tags__id=101)).count()
+    goles = Events.objects.filter(Q(playerId=player_id) & Q(tags__id=101)).count()
     pases = Events.objects.filter(Q(playerId=player_id) & Q(eventName="Pass")).count()
     tiros = Events.objects.filter(Q(playerId=player_id) & Q(eventName="Shot")).count()
     faltas = Events.objects.filter(Q(playerId=player_id) & Q(eventName="Foul")).count()
@@ -799,7 +809,7 @@ def barrasPlayer(request, player_id):
 @csrf_exempt
 def eventosPorPartido(request, player_id):
     partidos = Events.objects.filter(playerId=player_id).values("matchId").distinct().count()
-    goles = Events.objects.filter(Q(playerId=player_id) & (Q(eventName="Shot") | Q(eventName="Free Kick")) & Q(tags__id=101)).count()
+    goles = Events.objects.filter(Q(playerId=player_id) & Q(tags__id=101)).count()
     faltas = Events.objects.filter(Q(playerId=player_id) & Q(eventName="Foul")).count()
     asitencias = Events.objects.filter(Q(playerId=player_id) & Q(tags__id=301)).count()
     amarillas = Events.objects.filter(Q(playerId=player_id) &  Q(tags__id=1702)).count()

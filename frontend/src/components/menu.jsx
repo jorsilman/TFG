@@ -19,9 +19,6 @@ export default function Menu(){
                         <Link className="nav-link" to="/players">Jugadores</Link>
                     </li>
                     <li className="nav-item">
-                        <Link className="nav-link" to="/about">Prueba</Link>
-                    </li>
-                    <li className="nav-item">
                         <Link className="nav-link" to="/configs">Configuraciones</Link>
                     </li>
                 </ul>

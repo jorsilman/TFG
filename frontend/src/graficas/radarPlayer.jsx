@@ -1,33 +1,9 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useEffect, useRef } from 'react';
 import Chart from 'chart.js/auto';
-import { useParams } from "react-router-dom";
-import axios from 'axios';
 
-function RadarChartPlayer({ wyId}) {
-    const [data, setData] = useState({
-      goles: 0,
-      pases: 0,
-      tiros: 0,
-      faltas: 0,
-      intercepciones: 0,
-      asistencias: 0
-    });
-  
-    const { id } = useParams();
-
-    const param = wyId ? wyId : id;
-
+function RadarChartPlayer({ data}) {
     const chartRef = useRef();
-    const chartInstance = useRef(); // Definir la variable chartInstance aquí
-  
-    useEffect(() => {
-        axios.get(`http://localhost:8000/api/events/players/${param}/radar/`)
-          .then(response => setData(response.data))
-          .catch(error => console.log(error));
-      }, [id]);
-
-    
-    console.log(data);
+    const chartInstance = useRef(); 
   
     useEffect(() => {
       if (chartRef.current) {
@@ -55,18 +31,24 @@ function RadarChartPlayer({ wyId}) {
         };
   
         const chartOptions = {
-            scales: {
-                r: {
-                  ticks: {
-                    display: false
-                  }
-                }
-              },
+          layout: {
+            padding: 0
+          },
+          scales: {
+            r: {
+              ticks: {
+                display: false,
+                backdropPadding: 0
+              }
+            }
+          },
           plugins: {
             legend: {
-              display: false
-            },
-            
+              display: false,
+              labels: {
+                padding: 0
+              }
+            }
           },
           elements: {
             line: {
@@ -90,7 +72,7 @@ function RadarChartPlayer({ wyId}) {
     }, [data]);
   
     return (
-      <div>
+      <div class = "radar">
         <canvas id="radar-chart" ref={chartRef}></canvas>
       </div>
     );

@@ -2,11 +2,6 @@ from django.db import models
 
 from django.contrib.auth.models import AbstractUser,Group, Permission
 
-class Usuario(AbstractUser):
-    nombre = models.CharField(max_length=255)
-    groups = models.ManyToManyField(Group, related_name='usuarios')
-    user_permissions = models.ManyToManyField(Permission, related_name='usuarios')
-    equipoId = models.IntegerField(null=True)
 
 class Configuracion(models.Model):
     id = models.AutoField(primary_key=True)
@@ -50,7 +45,6 @@ class Players (models.Model):
     wyId = models.PositiveIntegerField(primary_key=True, null=False)
     foot = models.TextField()
     shortName = models.TextField()
-    currentNationalTeamId = models.ForeignKey(Teams, on_delete=models.CASCADE, related_name='current_national_team', null= True)
 
     def __str__(self):
         return self.firstName
