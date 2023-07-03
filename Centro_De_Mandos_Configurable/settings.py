@@ -79,27 +79,27 @@ WSGI_APPLICATION = 'Centro_De_Mandos_Configurable.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/4.1/ref/settings/#databases
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'centro_de_mandos_configurable',
-        'USER': 'root',
-        'PASSWORD': 'root',
-        'HOST': 'localhost',
-        'PORT': '3306',
-    }
-}
-
 # DATABASES = {
 #     'default': {
-#         'ENGINE': 'mysql.connector.django',
+#         'ENGINE': 'django.db.backends.mysql',
 #         'NAME': 'centro_de_mandos_configurable',
 #         'USER': 'root',
-#         'HOST': 'db',
 #         'PASSWORD': 'root',
+#         'HOST': 'localhost',
 #         'PORT': '3306',
 #     }
 # }
+
+DATABASES = {
+    'default': {
+        'ENGINE': 'mysql.connector.django',
+        'NAME': 'centro_de_mandos_configurable',
+        'USER': 'root',
+        'HOST': 'db',
+        'PASSWORD': 'root',
+        'PORT': '3306',
+    }
+}
 
 
 

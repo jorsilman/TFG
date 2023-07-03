@@ -1,0 +1,9 @@
+Los pasos a seguir para la instalación del proyecto son los mencionados a continuación:
+
+1. Extraer el archivo zip con el código del proyecto.
+2. Tener instalado Docker
+3. Situarnos en la carpeta raíz del proyecto.
+4. Ejecutar el comando docker-compose up
+5. Esperar a que arranquen todas las máquinas, en concreto a que se realice la carga de la base de datos. Estará listo cuando aparezca el mensaje por consola: "Watching for file changes with StatReloader"
+
+Una vez realizados estos pasos, se puede hacer uso del cuadro de mandos accediendo mediante un navegador a la url localhost:3000.
